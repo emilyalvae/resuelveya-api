@@ -1,16 +1,19 @@
-package com.resuelveya.resuelve_api.entity;
+package com.resuelveya.resuelve_api.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usuario")
+@Table
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
-public abstract class Usuario {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,4 +24,5 @@ public abstract class Usuario {
     private String email;
 
     private String telefono;
+
 }
