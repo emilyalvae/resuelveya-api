@@ -2,26 +2,19 @@ spring:
   application:
     name: resuelve-api
 
-  profiles:
-    active: dev  # por defecto usas local
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/resuelveya_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: Laga_1127
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
 
   jpa:
-    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: validate
-
-
-  server:
-    port: 8080
-
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: health,metrics
-    endpoint:
-      health:
-        show-details:always
-
-
-
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
