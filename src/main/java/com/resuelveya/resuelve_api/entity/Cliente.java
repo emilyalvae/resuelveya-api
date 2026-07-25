@@ -5,8 +5,8 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "cliente")
 @PrimaryKeyJoinColumn(name = "usuario_id")
+@Table(name = "cliente")
 public class Cliente extends Usuario {
 
     private String direccionHogar;
@@ -15,7 +15,7 @@ public class Cliente extends Usuario {
     }
 
     public Cliente(String nombre, String email, String telefono, String direccionHogar) {
-        super(nombre, email, telefono);
+        super(nombre, email, telefono,Rol.CLIENTE);
         this.direccionHogar = direccionHogar;
     }
 

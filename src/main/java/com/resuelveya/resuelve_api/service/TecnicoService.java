@@ -73,6 +73,8 @@ public class TecnicoService {
         tecnico.setAniosExperiencia(request.getAniosExperiencia());
         tecnico.setCalificacionPromedio(request.getCalificacionPromedio());
 
+
+
         tecnico.setEspecialidad(especialidad);
         entityManager.persist(tecnico);
 
