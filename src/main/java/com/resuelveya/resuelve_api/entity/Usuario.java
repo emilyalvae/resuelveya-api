@@ -1,25 +1,29 @@
 package com.resuelveya.resuelve_api.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "usuario")
+@Table
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Usuario {
-
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
     private String telefono;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rol rol;
+
 }
