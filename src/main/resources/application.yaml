@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: resuelve-api
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/resuelveya_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: Laga_1127
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
