@@ -14,15 +14,13 @@ public class TecnicoService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    // Cumple: Configuración de Flush y Clear para batch/lotes
     @Transactional
     public void registrarTecnicosEnLote(List<Tecnico> tecnicos) {
-        int batchSize = 5;
-
+        int batchSize = 20;
         for (int i = 0; i < tecnicos.size(); i++) {
             entityManager.persist(tecnicos.get(i));
-
-
-            if ((i + 1) % batchSize == 0) {
+            if (i % batchSize == 0 && i > 0) {
                 entityManager.flush();
                 entityManager.clear();
             }

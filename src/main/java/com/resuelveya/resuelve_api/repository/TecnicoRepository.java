@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TecnicoRepository extends JpaRepository<Tecnico, Long> {
-
     List<Tecnico> findByEspecialidadId(Long especialidadId);
 }
