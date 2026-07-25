@@ -26,4 +26,10 @@ public class Usuario {
     @Column(nullable = false)
     private Rol rol;
 
+    public Usuario(String nombre, String email, String telefono) {
+        this.nombre = nombre;
+        this.email = email;
+        this.telefono = telefono;
+        this.rol = Rol.CLIENTE; // asigna un valor por defecto
+    }
 }
