@@ -9,6 +9,7 @@ public class Tecnico extends Usuario {
     private Integer aniosExperiencia;
     private Double calificacionPromedio;
 
+//Solo cargamos cuando la necesitamos
     // Cumple: Rúbrica @ManyToOne + Fetching LAZY
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "especialidad_id")

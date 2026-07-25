@@ -1,12 +1,19 @@
 package com.resuelveya.resuelve_api.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "usuario")
-@Inheritance(strategy = InheritanceType.JOINED) // Cumple: Rúbrica Herencia
+@Table
+@Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,25 +22,8 @@ public class Usuario {
     private String email;
     private String telefono;
 
-    public Usuario() {
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rol rol;
 
-    public Usuario(String nombre, String email, String telefono) {
-        this.nombre = nombre;
-        this.email = email;
-        this.telefono = telefono;
-    }
-
-    // --- GETTERS Y SETTERS COMPLETO PARA EVITAR ERRORES DE COMPILACIÓN ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
 }
