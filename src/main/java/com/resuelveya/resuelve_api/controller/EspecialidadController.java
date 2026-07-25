@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping("/api/especialidades")
 public class EspecialidadController {
 
-    // INYECTAMOS EL SERVICIO (Donde está configurado el Flush de tu examen) en lugar del Repositorio
     @Autowired
     private EspecialidadService especialidadService;
 
@@ -31,7 +30,6 @@ public class EspecialidadController {
 
     @PostMapping
     public ResponseEntity<Especialidad> crear(@RequestBody Especialidad especialidad) {
-        // Aquí adentro se ejecutará el saveAndFlush() que requiere tu profesor
         Especialidad nueva = especialidadService.crearEspecialidad(especialidad);
         return new ResponseEntity<>(nueva, HttpStatus.CREATED);
     }

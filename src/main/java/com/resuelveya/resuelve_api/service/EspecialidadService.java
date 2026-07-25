@@ -17,7 +17,7 @@ public class EspecialidadService {
 
     @Transactional
     public Especialidad crearEspecialidad(Especialidad especialidad) {
-        // CUMPLE: Rúbrica - Configurar Flush para mejorar el rendimiento
+        // Configurar Flush para mejorar el rendimiento
         return especialidadRepository.saveAndFlush(especialidad);
     }
 

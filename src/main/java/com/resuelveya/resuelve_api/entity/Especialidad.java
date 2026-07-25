@@ -16,7 +16,6 @@ public class Especialidad {
     private String nombre;
     private String descripcion;
 
-    // Cumple: Rúbrica Relación @OneToMany
     @OneToMany(mappedBy = "especialidad", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Tecnico> tecnicos = new ArrayList<>();

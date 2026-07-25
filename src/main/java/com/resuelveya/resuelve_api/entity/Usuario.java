@@ -24,7 +24,6 @@ public class Usuario {
         this.telefono = telefono;
     }
 
-    // --- GETTERS Y SETTERS COMPLETO PARA EVITAR ERRORES DE COMPILACIÓN ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
