@@ -1,9 +1,11 @@
 package com.resuelveya.resuelve_api.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "usuario_id")
 @Table(name = "cliente")
 public class Cliente extends Usuario {
 
@@ -13,7 +15,7 @@ public class Cliente extends Usuario {
     }
 
     public Cliente(String nombre, String email, String telefono, String direccionHogar) {
-        super(nombre, email, telefono);
+        super(nombre, email, telefono,Rol.CLIENTE);
         this.direccionHogar = direccionHogar;
     }
 

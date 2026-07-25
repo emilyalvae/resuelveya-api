@@ -8,7 +8,7 @@ import lombok.*;
 @PrimaryKeyJoinColumn(name = "usuario_id")
 @Getter
 @Setter
-@NoArgsConstructor
+
 @AllArgsConstructor
 public class Tecnico extends Usuario {
 
@@ -20,9 +20,13 @@ public class Tecnico extends Usuario {
     private Especialidad especialidad;
 
 
+    public Tecnico() {
+        super();
+        this.setRol(Rol.TECNICO);
+    }
 
     public Tecnico(String nombre, String email, String telefono, Integer aniosExperiencia, Double calificacionPromedio, Especialidad especialidad) {
-        super(nombre, email, telefono);
+        super(nombre, email, telefono,Rol.TECNICO);
         this.aniosExperiencia = aniosExperiencia;
         this.calificacionPromedio = calificacionPromedio;
         this.especialidad = especialidad;
