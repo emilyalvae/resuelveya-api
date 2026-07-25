@@ -19,10 +19,7 @@ public class Usuario {
     private Long id;
 
     private String nombre;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
     private String telefono;
 
     @Enumerated(EnumType.STRING)
