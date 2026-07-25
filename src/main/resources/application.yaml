@@ -22,3 +22,9 @@ spring:
     endpoint:
       health:
         show-details:always
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 364920ad99d98704e154d6362bdf6f43ef6ed284
