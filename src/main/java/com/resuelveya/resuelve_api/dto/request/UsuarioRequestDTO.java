@@ -3,6 +3,7 @@ package com.resuelveya.resuelve_api.dto.request;
 import com.resuelveya.resuelve_api.entity.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +29,6 @@ public record UsuarioRequestDTO (
     @Size(max = 9,message = "El telefono no debe superar los 9 caracteres")
     String telefono,
 
-    @NotBlank(message = "El rol es obligatorio")
+    @NotNull(message = "El rol es obligatorio")
     Rol rol
 ){}

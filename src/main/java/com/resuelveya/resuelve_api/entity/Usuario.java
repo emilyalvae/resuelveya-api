@@ -25,4 +25,8 @@ public class Usuario {
 
     private String telefono;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rol rol;
+
 }
