@@ -19,8 +19,7 @@ public class Tecnico extends Usuario {
     @JoinColumn(name = "especialidad_id")
     private Especialidad especialidad;
 
-    public Tecnico() {
-    }
+
 
     public Tecnico(String nombre, String email, String telefono, Integer aniosExperiencia, Double calificacionPromedio, Especialidad especialidad) {
         super(nombre, email, telefono);
