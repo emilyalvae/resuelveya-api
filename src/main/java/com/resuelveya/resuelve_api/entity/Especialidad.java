@@ -11,6 +11,7 @@ public class Especialidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, length = 50, unique = true)
     private Long id;
 
     private String nombre;
