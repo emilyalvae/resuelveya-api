@@ -1,6 +1,6 @@
 package com.resuelveya.resuelve_api.service;
 
-import com.resuelveya.resuelve_api.dto.UsuarioRequest;
+import com.resuelveya.resuelve_api.dto.UsuarioRequestDTO;
 import com.resuelveya.resuelve_api.model.Usuario;
 import com.resuelveya.resuelve_api.repository.TecnicoRepository;
 import com.resuelveya.resuelve_api.repository.UsuarioRepository;
@@ -24,7 +24,7 @@ public class UsuarioService {
  }
 
  @Transactional
-    public Usuario registrarUsuario(UsuarioRequest dto){
+    public Usuario registrarUsuario(UsuarioRequestDTO dto){
      Usuario usuario = new Usuario(
              null,
              dto.getNombre(),

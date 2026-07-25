@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioRequest {
+public class UsuarioRequestDTO {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 80,message = "El nombre no debe superar los 80 caracteres")
