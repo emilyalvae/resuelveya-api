@@ -3,6 +3,7 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+src/main/resources/application.yaml
 
 ### STS ###
 .apt_generated
@@ -31,3 +32,31 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+
+# Archivos de configuración sensibles
+application-*.yml
+!application.yml        # Mantén el archivo base, ignora los específicos por entorno
+
+# Variables de entorno
+.env
+*.env
+
+# Archivos de credenciales
+*.key
+*.pem
+*.crt
+
+# Logs
+*.log
+logs/
+target/
+
+# Archivos temporales de IntelliJ/IDEA
+.idea/
+*.iml
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

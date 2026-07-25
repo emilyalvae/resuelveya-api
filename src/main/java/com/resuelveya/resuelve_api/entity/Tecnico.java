@@ -1,21 +1,25 @@
 package com.resuelveya.resuelve_api.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "tecnico")
+@PrimaryKeyJoinColumn(name = "usuario_id")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tecnico extends Usuario {
 
     private Integer aniosExperiencia;
     private Double calificacionPromedio;
 
-    // Cumple: Rúbrica @ManyToOne + Fetching LAZY
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "especialidad_id")
     private Especialidad especialidad;
 
-    public Tecnico() {
-    }
+
 
     public Tecnico(String nombre, String email, String telefono, Integer aniosExperiencia, Double calificacionPromedio, Especialidad especialidad) {
         super(nombre, email, telefono);
