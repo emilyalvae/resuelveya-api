@@ -1,12 +1,11 @@
 package com.resuelveya.resuelve_api.entity;
 
-import com.resuelveya.resuelve_api.model.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-//@Table(name = "tecnico")
+@Table(name = "tecnico")
 @PrimaryKeyJoinColumn(name = "usuario_id")
 @Getter
 @Setter
@@ -18,7 +17,7 @@ public class Tecnico extends Usuario {
     @Column(name = "calificacion_promedio")
     private Double calificacionPromedio;
 
-
+//Solo cargamos cuando la necesitamos
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "especialidad_id")
     private Especialidad especialidad;

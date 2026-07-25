@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.model;
+package com.resuelveya.resuelve_api.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

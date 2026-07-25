@@ -1,6 +1,6 @@
 package com.resuelveya.resuelve_api.config;
 
-import com.resuelveya.resuelve_api.model.Usuario;
+import com.resuelveya.resuelve_api.entity.Usuario;
 import com.resuelveya.resuelve_api.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

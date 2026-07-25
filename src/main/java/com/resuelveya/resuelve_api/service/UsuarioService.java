@@ -1,43 +1,17 @@
 package com.resuelveya.resuelve_api.service;
 
-import com.resuelveya.resuelve_api.dto.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.model.Usuario;
-import com.resuelveya.resuelve_api.repository.TecnicoRepository;
-import com.resuelveya.resuelve_api.repository.UsuarioRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
+import com.resuelveya.resuelve_api.dto.request.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.dto.response.UsuarioResponseDTO;
 
-@Service
-public class UsuarioService {
+import java.util.List;
 
-    private final UsuarioRepository usuarioRepository;
-    private final TecnicoRepository tecnicoRepository;
-    private final EntityManager entityManager;
+public interface UsuarioService {
 
- public UsuarioService(UsuarioRepository usuarioRepository,
-                       TecnicoRepository tecnicoRepository, EntityManager entityManager){
-     this.usuarioRepository=usuarioRepository;
-     this.tecnicoRepository=tecnicoRepository;
-     this.entityManager=entityManager;
-
- }
-
- @Transactional
-    public Usuario registrarUsuario(UsuarioRequestDTO dto){
-     Usuario usuario = new Usuario(
-             null,
-             dto.getNombre(),
-             dto.getEmail(),
-             dto.getTelefono()
-     );
-
-    entityManager.persist(usuario);
-
-    entityManager.flush();
-
-     //if para segun rol
-     return usuarioGuardado;
- }
-
+    List<UsuarioResponseDTO> obtenerTodos();
+    UsuarioResponseDTO obtenerPorId(Long id);
+    UsuarioResponseDTO crear(UsuarioRequestDTO request);
+    UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO request);
+    void eliminar(Long id);
+    List<UsuarioResponseDTO> buscarPorNombre(String nombre);
+    UsuarioResponseDTO buscarPorEmail(String email);
 }

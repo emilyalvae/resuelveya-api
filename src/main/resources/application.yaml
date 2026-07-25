@@ -3,17 +3,16 @@ spring:
     name: resuelve-api
 
   profiles:
-    active: local  # por defecto usas local
-
+    active: dev  # por defecto usas local
 
   jpa:
-    #database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true
+    open-in-view: false
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        format_sql: true
+
+
+  server:
+    port: 8080
 
   management:
     endpoints:

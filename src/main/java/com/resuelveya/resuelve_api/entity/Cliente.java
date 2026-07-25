@@ -1,12 +1,11 @@
 package com.resuelveya.resuelve_api.entity;
 
-import com.resuelveya.resuelve_api.model.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-//@Table(name = "cliente")
+@Table(name = "cliente")
 @PrimaryKeyJoinColumn(name = "usuario_id")
 @Getter
 @Setter
