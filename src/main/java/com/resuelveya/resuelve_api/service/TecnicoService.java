@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.service;
 
-import com.resuelveya.resuelve_api.dto.TecnicoRequestDto;
-import com.resuelveya.resuelve_api.dto.TecnicoResponseDto;
+import com.resuelveya.resuelve_api.dto.request.TecnicoRequestDto;
+import com.resuelveya.resuelve_api.dto.response.TecnicoResponseDto;
 import com.resuelveya.resuelve_api.entity.Especialidad;
 import com.resuelveya.resuelve_api.entity.Tecnico;
 import com.resuelveya.resuelve_api.repository.EspecialidadRepository;
