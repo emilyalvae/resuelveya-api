@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.dto;
+package com.resuelveya.resuelve_api.dto.response;
 import lombok.*;
 
 @Getter
