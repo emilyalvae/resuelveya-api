@@ -16,10 +16,12 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
+
     @GetMapping
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long id) {
@@ -28,11 +30,14 @@ public class ClienteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @PostMapping
     public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
-        Cliente nuevo = clienteRepository.save(cliente);
+
+        Cliente nuevo = clienteRepository.saveAndFlush(cliente);
         return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizar(@PathVariable Long id, @RequestBody Cliente detalles) {
@@ -41,15 +46,19 @@ public class ClienteController {
             cliente.setEmail(detalles.getEmail());
             cliente.setTelefono(detalles.getTelefono());
             cliente.setDireccionHogar(detalles.getDireccionHogar());
-            Cliente actualizado = clienteRepository.save(cliente);
+
+
+            Cliente actualizado = clienteRepository.saveAndFlush(cliente);
             return ResponseEntity.ok(actualizado);
         }).orElse(ResponseEntity.notFound().build());
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         if (clienteRepository.existsById(id)) {
             clienteRepository.deleteById(id);
+            clienteRepository.flush();
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

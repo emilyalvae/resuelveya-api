@@ -30,6 +30,6 @@ public class Usuario {
         this.nombre = nombre;
         this.email = email;
         this.telefono = telefono;
-        this.rol = rol; // asigna un valor por defecto
+        this.rol = rol;
     }
 }
