@@ -31,13 +31,13 @@ public class SecurityConfig {
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("Admin123"))
-                .roles("Admmin")
+                .roles("ADMIN")
                 .build();
 
         UserDetails cliente = User.builder()
                 .username("cliente")
                 .password(passwordEncoder().encode("Cliente123"))
-                .roles("Admmin")
+                .roles("CLIENTE")
                 .build();
 
         return new InMemoryUserDetailsManager(admin,cliente);
