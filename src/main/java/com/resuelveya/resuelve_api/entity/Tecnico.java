@@ -1,5 +1,7 @@
 package com.resuelveya.resuelve_api.entity;
 
+import com.resuelveya.resuelve_api.data.entity.Usuario;
+import com.resuelveya.resuelve_api.data.entity.enums.Rol;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +28,7 @@ public class Tecnico extends Usuario {
     }
 
     public Tecnico(String nombre, String email, String telefono, Integer aniosExperiencia, Double calificacionPromedio, Especialidad especialidad) {
-        super(nombre, email, telefono,Rol.TECNICO);
+        super(nombre, email, telefono, Rol.TECNICO);
         this.aniosExperiencia = aniosExperiencia;
         this.calificacionPromedio = calificacionPromedio;
         this.especialidad = especialidad;

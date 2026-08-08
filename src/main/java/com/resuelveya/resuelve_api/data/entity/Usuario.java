@@ -1,5 +1,6 @@
-package com.resuelveya.resuelve_api.entity;
+package com.resuelveya.resuelve_api.data.entity;
 
+import com.resuelveya.resuelve_api.data.entity.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

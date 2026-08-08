@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.controller;
 
-import com.resuelveya.resuelve_api.dto.request.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.repository.UsuarioRepository;
+import com.resuelveya.resuelve_api.api.dto.usuario.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.data.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

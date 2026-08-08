@@ -1,14 +1,10 @@
-package com.resuelveya.resuelve_api.dto.request;
+package com.resuelveya.resuelve_api.api.dto.usuario;
 
-import com.resuelveya.resuelve_api.entity.Rol;
+import com.resuelveya.resuelve_api.data.entity.enums.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 //@Getter
 //@Setter

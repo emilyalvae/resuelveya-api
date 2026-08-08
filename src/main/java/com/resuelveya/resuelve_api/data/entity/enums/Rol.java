@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.entity;
+package com.resuelveya.resuelve_api.data.entity.enums;
 
 public enum Rol {
     CLIENTE,

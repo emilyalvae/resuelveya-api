@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.exception;
+package com.resuelveya.resuelve_api.api.exception;
 
 public class RecursoNoEncontradoException  extends RuntimeException{
 

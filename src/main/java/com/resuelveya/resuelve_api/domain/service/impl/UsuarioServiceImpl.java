@@ -1,23 +1,22 @@
-package com.resuelveya.resuelve_api.service.impl;
+package com.resuelveya.resuelve_api.domain.service.impl;
 
-import com.resuelveya.resuelve_api.dto.request.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.dto.response.UsuarioResponseDTO;
-import com.resuelveya.resuelve_api.entity.Usuario;
-import com.resuelveya.resuelve_api.exception.RecursoDuplicadoException;
-import com.resuelveya.resuelve_api.exception.RecursoNoEncontradoException;
-import com.resuelveya.resuelve_api.exception.RolInvalidoException;
-import com.resuelveya.resuelve_api.mapper.UsuarioMapper;
+import com.resuelveya.resuelve_api.api.dto.usuario.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.api.dto.usuario.UsuarioResponseDTO;
+import com.resuelveya.resuelve_api.data.entity.Usuario;
+import com.resuelveya.resuelve_api.api.exception.RecursoDuplicadoException;
+import com.resuelveya.resuelve_api.api.exception.RecursoNoEncontradoException;
+import com.resuelveya.resuelve_api.api.exception.RolInvalidoException;
+import com.resuelveya.resuelve_api.domain.mapper.UsuarioMapper;
 import com.resuelveya.resuelve_api.repository.ClienteRepository;
 import com.resuelveya.resuelve_api.repository.TecnicoRepository;
-import com.resuelveya.resuelve_api.repository.UsuarioRepository;
-import com.resuelveya.resuelve_api.service.UsuarioService;
-import jakarta.persistence.EntityManager;
+import com.resuelveya.resuelve_api.data.repository.UsuarioRepository;
+import com.resuelveya.resuelve_api.domain.service.UsuarioService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import com.resuelveya.resuelve_api.entity.Rol;
-
 
 
 @Service
@@ -106,6 +105,20 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
         return usuarioMapper.toResponseDto(usuario);
+    }
+
+    @Override
+    public Page<UsuarioResponseDTO> consultar(String nombre, Pageable pageable) {
+        String nombreNormalizado =
+                nombre == null || nombre.isBlank()
+                        ? null
+                        : nombre.trim();
+
+        return usuarioRepository.buscarUsuarios(
+                        nombreNormalizado,
+                        pageable
+                )
+                .map(usuarioMapper::toResponseDto);
     }
 
 }
