@@ -10,15 +10,19 @@ spring:
     hibernate:
       ddl-auto: validate
 
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:3600000}
 
-  server:
+server:
     port: 8080
 
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: health,metrics
-    endpoint:
-      health:
-        show-details:always
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      show-details:always

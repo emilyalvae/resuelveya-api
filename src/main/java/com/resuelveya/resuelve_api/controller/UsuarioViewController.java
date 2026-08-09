@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.controller;
 
-import com.resuelveya.resuelve_api.api.dto.usuario.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.data.repository.UsuarioRepository;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ public class UsuarioViewController {
 
     @GetMapping("/nuevo")
     public String registrarUsuarios(Model model) {
-        model.addAttribute("usuarioForm",new UsuarioRequestDTO(null, null, null, null));
+        model.addAttribute("usuarioForm",new UsuarioRequestDTO(null, null, null, null,null));
         model.addAttribute("usuarios", usuarioRepository.findAll());
         return "usuarios"; // busca usuarios.html en templates/
     }

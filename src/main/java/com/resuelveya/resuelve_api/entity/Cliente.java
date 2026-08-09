@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.entity;
 
-import com.resuelveya.resuelve_api.data.entity.Usuario;
-import com.resuelveya.resuelve_api.data.entity.enums.Rol;
+import com.resuelveya.resuelve_api.business.data.entity.Usuario;
+import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -16,8 +16,8 @@ public class Cliente extends Usuario {
     public Cliente() {
     }
 
-    public Cliente(String nombre, String email, String telefono, String direccionHogar) {
-        super(nombre, email, telefono, Rol.CLIENTE);
+    public Cliente(String nombre, String email, String password, String telefono, String direccionHogar) {
+        super(nombre, email, telefono,password, Rol.CLIENTE);
         this.direccionHogar = direccionHogar;
     }
 
