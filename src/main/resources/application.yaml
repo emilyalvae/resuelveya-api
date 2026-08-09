@@ -8,17 +8,22 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
 
 
-  server:
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:3600000}
+
+server:
     port: 8080
 
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: health,metrics
-    endpoint:
-      health:
-        show-details:always
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      show-details:always

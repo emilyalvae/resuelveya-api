@@ -1,13 +1,16 @@
 package com.resuelveya.resuelve_api.business.data.entity;
 
+import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table
+@Table(name = "usuario")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
@@ -19,17 +22,28 @@ public class Usuario {
     private Long id;
 
     private String nombre;
+
+    @Column(nullable = false, unique = true)
     private String email;
     private String telefono;
+
+    @Column(nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Rol rol;
 
-    public Usuario(String nombre, String email, String telefono,Rol rol) {
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Usuario(String nombre, String email, String telefono,String password, Rol rol) {
         this.nombre = nombre;
         this.email = email;
         this.telefono = telefono;
+        this.password=password;
         this.rol = rol; // asigna un valor por defecto
+        this.createdAt=LocalDateTime.now();
     }
+
 }

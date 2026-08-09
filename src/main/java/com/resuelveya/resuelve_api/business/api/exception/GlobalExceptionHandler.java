@@ -1,61 +1,95 @@
 package com.resuelveya.resuelve_api.business.api.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler  {
 
-    // 1. Manejo de Recurso No Encontrado -> HTTP 404
     @ExceptionHandler(RecursoNoEncontradoException.class)
-    public ResponseEntity<Map<String, Object>> manejarNoEncontrado(RecursoNoEncontradoException ex) {
-        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    // 2. Manejo de Recurso Duplicado -> HTTP 409
-    @ExceptionHandler(RecursoDuplicadoException.class)
-    public ResponseEntity<Map<String, Object>> manejarDuplicado(RecursoDuplicadoException ex) {
-        return construirRespuesta(HttpStatus.CONFLICT, ex.getMessage());
-    }
-
-    // 3. Manejo de Reglas de Negocio / Rol Inválido -> HTTP 400
-    @ExceptionHandler(RolInvalidoException.class)
-    public ResponseEntity<Map<String, Object>> manejarRolInvalido(RolInvalidoException ex) {
-        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-    // 4. Manejo de errores de validación de los DTOs (@Valid / @NotBlank, etc.) -> HTTP 400
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> manejarValidacionesDto(MethodArgumentNotValidException ex) {
-        Map<String, String> erroresCampos = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                erroresCampos.put(error.getField(), error.getDefaultMessage())
+    public ResponseEntity<ApiErrorResponse> manejarRecursoNoEncontrado(
+            RecursoNoEncontradoException exception,
+            HttpServletRequest request
+    ){
+        return construirRespuesta(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage(),
+                request.getRequestURI(),
+                Map.of()
         );
-
-        Map<String, Object> respuesta = new HashMap<>();
-        respuesta.put("timestamp", LocalDateTime.now());
-        respuesta.put("status", HttpStatus.BAD_REQUEST.value());
-        respuesta.put("error", "Error de Validación en los datos enviados");
-        respuesta.put("detalles", erroresCampos);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
+    }
+    @ExceptionHandler(RecursoDuplicadoException.class)
+    public ResponseEntity<ApiErrorResponse> manejarRecursoDuplicado(
+            RecursoDuplicadoException exception,
+            HttpServletRequest request
+    ){
+        return construirRespuesta(
+                HttpStatus.CONFLICT,
+                exception.getMessage(),
+                request.getRequestURI(),
+                Map.of()
+        );
     }
 
-    // Método auxiliar para estandarizar el JSON de respuesta
-    private ResponseEntity<Map<String, Object>> construirRespuesta(HttpStatus status, String mensaje) {
-        Map<String, Object> respuesta = new HashMap<>();
-        respuesta.put("timestamp", LocalDateTime.now());
-        respuesta.put("status", status.value());
-        respuesta.put("error", status.getReasonPhrase());
-        respuesta.put("message", mensaje);
-        return ResponseEntity.status(status).body(respuesta);
+    @ExceptionHandler(RolInvalidoException.class)
+    public ResponseEntity<ApiErrorResponse> manejarRolInvalido(
+            RolInvalidoException exception,
+            HttpServletRequest request
+    ){
+        return construirRespuesta(
+                HttpStatus.BAD_REQUEST,
+                "El rol es inválido",
+                request.getRequestURI(),
+                Map.of()
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> manejarExcepcionGeneral(
+            Exception exception,
+            HttpServletRequest request
+    ) {
+        return construirRespuesta(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocurrió un error interno en el servidor",
+                request.getRequestURI(),
+                Map.of()
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiErrorResponse> manejarAutenticacion(
+            AuthenticationException exception,
+            HttpServletRequest request
+    ) {
+        return construirRespuesta(
+                HttpStatus.UNAUTHORIZED,
+                "Usuario o contraseña incorrectos",
+                request.getRequestURI(),
+                Map.of()
+        );
+    }
+
+    private  ResponseEntity<ApiErrorResponse> construirRespuesta(
+            HttpStatus status,
+            String message,
+            String path,
+            Map<String,String> validateErrors
+    ){
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                path,validateErrors
+        );
+        return ResponseEntity.status(status).body(response);
     }
 }

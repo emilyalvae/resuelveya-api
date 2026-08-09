@@ -1,6 +1,6 @@
 package com.resuelveya.resuelve_api.config;
 
-import com.resuelveya.resuelve_api.business.data.entity.Rol;
+import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
 import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +17,7 @@ public class DataInitializer {
                 Usuario admin = new Usuario();
                 admin.setNombre("Admin");
                 admin.setEmail("admin@resuelveya.com");
+                admin.setPassword("123456");
                 admin.setRol(Rol.ADMIN);
                 usuarioRepository.save(admin);
             }
