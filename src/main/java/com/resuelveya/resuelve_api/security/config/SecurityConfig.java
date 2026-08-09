@@ -2,8 +2,6 @@ package com.resuelveya.resuelve_api.security.config;
 
 import com.resuelveya.resuelve_api.security.domain.service.CustomUserDetailsService;
 import com.resuelveya.resuelve_api.security.filter.JwtAuthenticationFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,7 +26,6 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -70,14 +67,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
     ) throws Exception{
-        logger.info("=== CONFIGURANDO SECURITY FILTER CHAIN ===");
-        logger.info("Configurando reglas de autorización:");
-        logger.info("  - /api/v1/auth/** → permitAll()");
-        logger.info("  - GET /api/especialidades/** → permitAll()");
-        logger.info("  - /api/v1/usuarios/** → hasRole('ADMIN')");
-        logger.info("  - /error → permitAll()");
-        logger.info("  - Cualquier otra petición → authenticated()");
-        
         return  http
                 .csrf(csrf->csrf.disable())
 

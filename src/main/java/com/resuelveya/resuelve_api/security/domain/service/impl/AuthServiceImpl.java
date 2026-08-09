@@ -10,8 +10,6 @@ import com.resuelveya.resuelve_api.security.api.dto.LoginRequestDto;
 import com.resuelveya.resuelve_api.security.api.dto.LoginResponseDto;
 import com.resuelveya.resuelve_api.security.domain.service.AuthService;
 import com.resuelveya.resuelve_api.security.domain.service.JwtService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,7 +29,6 @@ public class AuthServiceImpl implements AuthService {
     private  final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     public AuthServiceImpl(
             UsuarioRepository usuarioRepository,
@@ -72,35 +69,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponseDto login(LoginRequestDto requestDto) {
        String username = normalizarEmail(requestDto.email());
-       
-      logger.info("=== INICIANDO LOGIN ===");
-      logger.info("Email (normalizado): {}", username);
-       
-       UsernamePasswordAuthenticationToken solicitud = new UsernamePasswordAuthenticationToken(username,requestDto.password());
+        UsernamePasswordAuthenticationToken solicitud = new UsernamePasswordAuthenticationToken(username,requestDto.password());
 
-       UserDetails userDetails = (UserDetails) authenticationManager.authenticate(solicitud).getPrincipal();
-        
-       logger.info("Usuario autenticado por AuthenticationManager: {}", userDetails.getUsername());
-       logger.info("Autoridades del usuario desde BD: {}", userDetails.getAuthorities());
+        UserDetails userDetails = (UserDetails) authenticationManager.authenticate(solicitud).getPrincipal();
 
-       String token = jwtService.generarToken(userDetails);
-       String authority = userDetails                .getAuthorities()
-               .stream()
-               .findFirst()
-               .map(GrantedAuthority::getAuthority)
-               .orElse("ROLE_CLIENTE");
+        String token = jwtService.generarToken(userDetails);
+        String authority = userDetails                .getAuthorities()
+                .stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_CLIENTE");
 
-       logger.info("Primera autoridad extraída: {}", authority);
-        
-       Rol rol = Rol.valueOf(authority.replace("ROLE_", ""));
-        
-       logger.info("Rol convertido del enum: {}", rol);
-       logger.info("LoginResponseDto generado - email: {}, rol: {}", userDetails.getUsername(), rol);
-        
-       return  new LoginResponseDto(
-               token,"Bearer",jwtService.obtenerTiempoExpiracion(),
-               userDetails.getUsername(),rol
-       );
+        Rol rol = Rol.valueOf(authority.replace("ROLE_", ""));
+        return  new LoginResponseDto(
+                token,"Bearer",jwtService.obtenerTiempoExpiracion(),
+                userDetails.getUsername(),rol
+        );
 
     }
 

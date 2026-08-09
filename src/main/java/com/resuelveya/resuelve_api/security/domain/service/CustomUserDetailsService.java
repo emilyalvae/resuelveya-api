@@ -2,8 +2,6 @@ package com.resuelveya.resuelve_api.security.domain.service;
 
 import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
-    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     public CustomUserDetailsService(
             UsuarioRepository usuarioRepository
@@ -35,8 +32,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                         new UsernameNotFoundException("Email o contraseña incorrectos"));
 
         String autorizacion =  "ROLE_"+usuario.getRol();
-        
-        logger.debug("Usuario encontrado: email={}, rol={}, autoridad={}", usuario.getEmail(), usuario.getRol(), autorizacion);
 
         return User.builder()
                 .username(usuario.getEmail())
