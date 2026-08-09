@@ -1,0 +1,24 @@
+package com.resuelveya.resuelve_api.business.data.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+
+@Entity
+@PrimaryKeyJoinColumn(name = "usuario_id")
+@Table(name = "cliente")
+public class Cliente extends Usuario {
+
+    private String direccionHogar;
+
+    public Cliente() {
+    }
+
+    public Cliente(String nombre, String email, String telefono, String direccionHogar) {
+        super(nombre, email, telefono,Rol.CLIENTE);
+        this.direccionHogar = direccionHogar;
+    }
+
+    public String getDireccionHogar() { return direccionHogar; }
+    public void setDireccionHogar(String direccionHogar) { this.direccionHogar = direccionHogar; }
+}
