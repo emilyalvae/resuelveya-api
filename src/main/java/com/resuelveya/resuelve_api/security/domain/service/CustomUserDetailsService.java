@@ -2,6 +2,7 @@ package com.resuelveya.resuelve_api.security.domain.service;
 
 import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(usuario.getEmail())
                 .password(usuario.getPassword())
-                .authorities(autorizacion)
+                .authorities(new SimpleGrantedAuthority(autorizacion))
                 .build();
     }
 }

@@ -54,7 +54,10 @@ public class JwtService {
                 .subject(userDetails.getUsername())
                 .issuedAt(fechaCreacion)
                 .expiration(fechaExpiracion)
-                .signWith(obtenerClave())
+                .signWith(
+                        obtenerClave(),
+                        Jwts.SIG.HS256
+                        )
                 .compact();
     }
 
