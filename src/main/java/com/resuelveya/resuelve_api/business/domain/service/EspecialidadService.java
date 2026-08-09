@@ -1,7 +1,7 @@
-package com.resuelveya.resuelve_api.service;
+package com.resuelveya.resuelve_api.business.domain.service;
 
-import com.resuelveya.resuelve_api.entity.Especialidad;
-import com.resuelveya.resuelve_api.repository.EspecialidadRepository;
+import com.resuelveya.resuelve_api.business.data.entity.Especialidad;
+import com.resuelveya.resuelve_api.business.data.repository.EspecialidadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
-package com.resuelveya.resuelve_api.controller;
+package com.resuelveya.resuelve_api.business.api.controller;
 
-import com.resuelveya.resuelve_api.entity.Especialidad;
-import com.resuelveya.resuelve_api.repository.EspecialidadRepository;
+import com.resuelveya.resuelve_api.business.data.entity.Especialidad;
+import com.resuelveya.resuelve_api.business.data.repository.EspecialidadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

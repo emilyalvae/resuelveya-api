@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.entity;
+package com.resuelveya.resuelve_api.business.data.entity;
 
 import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;

@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.entity;
+package com.resuelveya.resuelve_api.business.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
