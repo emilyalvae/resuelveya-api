@@ -1,23 +1,22 @@
-package com.resuelveya.resuelve_api.service.impl;
+package com.resuelveya.resuelve_api.business.domain.service.impl;
 
-import com.resuelveya.resuelve_api.dto.request.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.dto.response.UsuarioResponseDTO;
-import com.resuelveya.resuelve_api.entity.Usuario;
-import com.resuelveya.resuelve_api.exception.RecursoDuplicadoException;
-import com.resuelveya.resuelve_api.exception.RecursoNoEncontradoException;
-import com.resuelveya.resuelve_api.exception.RolInvalidoException;
-import com.resuelveya.resuelve_api.mapper.UsuarioMapper;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioResponseDTO;
+import com.resuelveya.resuelve_api.business.data.entity.Usuario;
+import com.resuelveya.resuelve_api.business.api.exception.RecursoDuplicadoException;
+import com.resuelveya.resuelve_api.business.api.exception.RecursoNoEncontradoException;
+import com.resuelveya.resuelve_api.business.api.exception.RolInvalidoException;
+import com.resuelveya.resuelve_api.business.domain.mapper.UsuarioMapper;
 import com.resuelveya.resuelve_api.repository.ClienteRepository;
 import com.resuelveya.resuelve_api.repository.TecnicoRepository;
-import com.resuelveya.resuelve_api.repository.UsuarioRepository;
-import com.resuelveya.resuelve_api.service.UsuarioService;
-import jakarta.persistence.EntityManager;
+import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
+import com.resuelveya.resuelve_api.business.domain.service.UsuarioService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import com.resuelveya.resuelve_api.entity.Rol;
-
 
 
 @Service
@@ -60,7 +59,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO crear(UsuarioRequestDTO request){
-        if (usuarioRepository.existsByEmail(request.email())) {
+        if (usuarioRepository.existsByEmailIgnoreCase(request.email())) {
             throw new RecursoDuplicadoException("El email ya está registrado");
         }
 
@@ -103,9 +102,23 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO buscarPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
         return usuarioMapper.toResponseDto(usuario);
+    }
+
+    @Override
+    public Page<UsuarioResponseDTO> consultar(String nombre, Pageable pageable) {
+        String nombreNormalizado =
+                nombre == null || nombre.isBlank()
+                        ? null
+                        : nombre.trim();
+
+        return usuarioRepository.buscarUsuarios(
+                        nombreNormalizado,
+                        pageable
+                )
+                .map(usuarioMapper::toResponseDto);
     }
 
 }

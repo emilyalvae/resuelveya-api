@@ -1,11 +1,12 @@
-package com.resuelveya.resuelve_api.controller;
+package com.resuelveya.resuelve_api.business.api.controller;
 
-import com.resuelveya.resuelve_api.dto.request.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.dto.response.UsuarioResponseDTO;
-import com.resuelveya.resuelve_api.entity.Usuario;
-import com.resuelveya.resuelve_api.repository.UsuarioRepository;
-import com.resuelveya.resuelve_api.service.UsuarioService;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioResponseDTO;
+import com.resuelveya.resuelve_api.business.domain.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -68,6 +69,19 @@ public class UsuarioController {
     @GetMapping("/buscar/email")
     public ResponseEntity<UsuarioResponseDTO> buscarPorEmail(@RequestParam String email) {
         return ResponseEntity.ok(usuarioService.buscarPorEmail(email));
+    }
+
+    @GetMapping("/consulta")
+    public ResponseEntity<Page<UsuarioResponseDTO>>consultar(
+            @RequestParam(required = false) String nombre,
+            @PageableDefault(
+                    page = 0,
+                    size = 5,
+                    sort = "nombre"
+            )
+            Pageable pageable
+    ){
+        return ResponseEntity.ok(usuarioService.consultar(nombre, pageable));
     }
 
 }

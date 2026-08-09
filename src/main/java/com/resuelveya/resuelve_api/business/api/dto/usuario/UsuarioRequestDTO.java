@@ -1,14 +1,7 @@
-package com.resuelveya.resuelve_api.dto.request;
+package com.resuelveya.resuelve_api.business.api.dto.usuario;
 
-import com.resuelveya.resuelve_api.entity.Rol;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
+import jakarta.validation.constraints.*;
 
 //@Getter
 //@Setter
@@ -24,6 +17,12 @@ public record UsuarioRequestDTO (
     @Email(message = "Ingresa un email valido")
     @Size(max = 100,message = "El nombre no debe superar los 100 caracteres")
     String email,
+
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$",
+            message = "La contraseña debe tener al menos una mayúscula, una minúscula y un número"
+    )
+    String password,
 
 
     @Size(max = 9,message = "El telefono no debe superar los 9 caracteres")

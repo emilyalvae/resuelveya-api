@@ -1,10 +1,10 @@
-package com.resuelveya.resuelve_api.mapper;
+package com.resuelveya.resuelve_api.business.domain.mapper;
 
-import com.resuelveya.resuelve_api.dto.request.UsuarioRequestDTO;
-import com.resuelveya.resuelve_api.dto.response.UsuarioResponseDTO;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioRequestDTO;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioResponseDTO;
 import com.resuelveya.resuelve_api.entity.Cliente;
 import com.resuelveya.resuelve_api.entity.Tecnico;
-import com.resuelveya.resuelve_api.entity.Usuario;
+import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
