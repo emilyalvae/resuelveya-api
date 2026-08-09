@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.business.domain.service.impl;
 
-import com.resuelveya.resuelve_api.business.api.dto.request.TecnicoRequestDto;
-import com.resuelveya.resuelve_api.business.api.dto.response.TecnicoResponseDto;
+import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoRequestDto;
+import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoResponseDto;
 import com.resuelveya.resuelve_api.business.data.entity.Especialidad;
 import com.resuelveya.resuelve_api.business.data.entity.Tecnico;
 import com.resuelveya.resuelve_api.business.api.exception.RecursoDuplicadoException;

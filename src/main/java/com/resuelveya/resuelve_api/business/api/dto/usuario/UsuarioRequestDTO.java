@@ -1,22 +1,10 @@
-<<<<<<<< HEAD:src/main/java/com/resuelveya/resuelve_api/business/api/dto/request/UsuarioRequestDTO.java
-package com.resuelveya.resuelve_api.business.api.dto.request;
 
-import com.resuelveya.resuelve_api.business.data.entity.Rol;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-========
 package com.resuelveya.resuelve_api.business.api.dto.usuario;
 
 import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
 import jakarta.validation.constraints.*;
->>>>>>>> origin/develop:src/main/java/com/resuelveya/resuelve_api/business/api/dto/usuario/UsuarioRequestDTO.java
 
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
+
 public record UsuarioRequestDTO (
 
     @NotBlank(message = "El nombre es obligatorio")

@@ -13,6 +13,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler  {
 
+    // 1. Manejo de Recurso No Encontrado -> HTTP 404
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity<ApiErrorResponse> manejarRecursoNoEncontrado(
             RecursoNoEncontradoException exception,
@@ -25,6 +26,7 @@ public class GlobalExceptionHandler  {
                 Map.of()
         );
     }
+    // 2. Manejo de Recurso Duplicado -> HTTP 409
     @ExceptionHandler(RecursoDuplicadoException.class)
     public ResponseEntity<ApiErrorResponse> manejarRecursoDuplicado(
             RecursoDuplicadoException exception,
@@ -37,7 +39,7 @@ public class GlobalExceptionHandler  {
                 Map.of()
         );
     }
-
+    // 3. Manejo de Reglas de Negocio / Rol Inválido -> HTTP 400
     @ExceptionHandler(RolInvalidoException.class)
     public ResponseEntity<ApiErrorResponse> manejarRolInvalido(
             RolInvalidoException exception,

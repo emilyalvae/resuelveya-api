@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.business.api.dto.request;
+package com.resuelveya.resuelve_api.business.api.dto.tecnico;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;

@@ -7,8 +7,8 @@ import com.resuelveya.resuelve_api.business.api.exception.RecursoDuplicadoExcept
 import com.resuelveya.resuelve_api.business.api.exception.RecursoNoEncontradoException;
 import com.resuelveya.resuelve_api.business.api.exception.RolInvalidoException;
 import com.resuelveya.resuelve_api.business.domain.mapper.UsuarioMapper;
-import com.resuelveya.resuelve_api.repository.ClienteRepository;
-import com.resuelveya.resuelve_api.repository.TecnicoRepository;
+import com.resuelveya.resuelve_api.business.data.repository.ClienteRepository;
+import com.resuelveya.resuelve_api.business.data.repository.TecnicoRepository;
 import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
 import com.resuelveya.resuelve_api.business.domain.service.UsuarioService;
 import jakarta.transaction.Transactional;

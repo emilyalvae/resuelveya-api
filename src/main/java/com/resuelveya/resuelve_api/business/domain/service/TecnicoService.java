@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.business.domain.service;
 
-import com.resuelveya.resuelve_api.business.api.dto.request.TecnicoRequestDto;
-import com.resuelveya.resuelve_api.business.api.dto.response.TecnicoResponseDto;
+import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoRequestDto;
+import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

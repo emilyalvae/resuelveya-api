@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.business.api.dto.response;
+package com.resuelveya.resuelve_api.business.api.dto.tecnico;
 
 public record TecnicoResponseDto(
 
