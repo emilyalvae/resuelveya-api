@@ -1,26 +1,23 @@
 package com.resuelveya.resuelve_api.business.data.entity;
 
-import com.resuelveya.resuelve_api.business.data.entity.Usuario;
-import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 @Entity
-@PrimaryKeyJoinColumn(name = "usuario_id")
 @Table(name = "cliente")
+@PrimaryKeyJoinColumn(name = "usuario_id")
 public class Cliente extends Usuario {
 
+    @Column(name = "direccion_hogar", length = 200)
     private String direccionHogar;
 
-    public Cliente() {
-    }
-
-    public Cliente(String nombre, String email, String password, String telefono, String direccionHogar) {
-        super(nombre, email, telefono,password, Rol.CLIENTE);
-        this.direccionHogar = direccionHogar;
-    }
-
-    public String getDireccionHogar() { return direccionHogar; }
-    public void setDireccionHogar(String direccionHogar) { this.direccionHogar = direccionHogar; }
+    // Requerimiento T1: Relación @OneToMany optimizada con FetchType.LAZY
+   // @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    //private List<SolicitudServicio> solicitudes = new ArrayList<>();
 }

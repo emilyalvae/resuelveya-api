@@ -1,8 +1,10 @@
 package com.resuelveya.resuelve_api.business.api.controller;
 
-import com.resuelveya.resuelve_api.business.data.entity.Cliente;
-import com.resuelveya.resuelve_api.business.data.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.resuelveya.resuelve_api.business.api.dto.cliente.ClienteRequestDto;
+import com.resuelveya.resuelve_api.business.api.dto.cliente.ClienteResponseDto;
+import com.resuelveya.resuelve_api.business.domain.service.ClienteService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,56 +13,43 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ClienteController {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
-
+    private final ClienteService clienteService;
 
     @GetMapping
-    public List<Cliente> listarTodos() {
-        return clienteRepository.findAll();
+    public ResponseEntity<List<ClienteResponseDto>> listarTodos() {
+        return ResponseEntity.ok(clienteService.obtenerTodos());
     }
-
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long id) {
-        return clienteRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ClienteResponseDto> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(clienteService.obtenerPorId(id));
     }
-
 
     @PostMapping
-    public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
-
-        Cliente nuevo = clienteRepository.saveAndFlush(cliente);
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+    public ResponseEntity<ClienteResponseDto> crear(@Valid @RequestBody ClienteRequestDto requestDto) {
+        return new ResponseEntity<>(clienteService.crear(requestDto), HttpStatus.CREATED);
     }
-
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizar(@PathVariable Long id, @RequestBody Cliente detalles) {
-        return clienteRepository.findById(id).map(cliente -> {
-            cliente.setNombre(detalles.getNombre());
-            cliente.setEmail(detalles.getEmail());
-            cliente.setTelefono(detalles.getTelefono());
-            cliente.setDireccionHogar(detalles.getDireccionHogar());
-
-
-            Cliente actualizado = clienteRepository.saveAndFlush(cliente);
-            return ResponseEntity.ok(actualizado);
-        }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ClienteResponseDto> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ClienteRequestDto requestDto) {
+        return ResponseEntity.ok(clienteService.actualizar(id, requestDto));
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (clienteRepository.existsById(id)) {
-            clienteRepository.deleteById(id);
-            clienteRepository.flush();
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        clienteService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/procesamiento-masivo")
+    public ResponseEntity<Void> cargarMasivo(@RequestBody List<@Valid ClienteRequestDto> listaClientes) {
+        clienteService.procesamientoMasivoClientes(listaClientes);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
