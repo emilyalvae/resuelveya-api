@@ -1,779 +1,406 @@
 # 📋 Documentación de Endpoints - ResuelveYa API
 
-**Base URL:** `http://localhost:8080`
-
-**Versión:** v1
+**Base URL:** `http://localhost:8080`  
+**Versión:** v1  
 
 ---
 
-## 🔐 Autenticación
+## 🔐 Autenticación y Seguridad
 
 Todos los endpoints protegidos requieren incluir el token JWT en el header:
 
-```
+```http
 Authorization: Bearer <token>
 ```
 
-**Tokens válidos obtienen:**
-- `token`: JWT con roles incluidos
-- `tipo`: "Bearer"
-- `expiresIn`: 3600000 ms (1 hora)
-- `email`: Email del usuario
-- `rol`: Rol asignado (ADMIN, CLIENTE, TECNICO)
+### Roles del Sistema:
+- **`ADMIN`**: Acceso completo a gestión de usuarios y CRUD de categorías.
+- **`TECNICO`**: Gestión de perfil profesional, métodos de pago (Yape/Plin) y CRUD de sus propios servicios ofrecidos.
+- **`CLIENTE`**: Actualización de perfil personal, consulta de detalle completo de técnicos y publicación de reseñas.
+- **`VISITANTE` (No autenticado)**: Búsqueda pública de servicios, listado público de técnicos y consulta de categorías.
 
 ---
 
-## 🔓 Autenticación (Sin protección)
+## 🔓 1. Autenticación Pública
 
-### 1. Registro de usuario
+### 1.1. Registro de usuario
+Permite el registro público seleccionando el rol (`CLIENTE` o `TECNICO`).
 - **Método:** `POST`
 - **Ruta:** `/api/v1/auth/registro`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
+- **Permisos:** Público (Sin autenticación)
 
 **Body (Request):**
 ```json
 {
-  "nombre": "string (max 80 caracteres, obligatorio)",
-  "email": "string (formato email, max 100, obligatorio)",
-  "password": "string (debe contener mayúscula, minúscula y número, obligatorio)",
-  "telefono": "string (max 9 caracteres, opcional)",
-  "rol": "enum: ADMIN | CLIENTE | TECNICO (obligatorio)"
+  "nombre": "Carlos Gómez",
+  "email": "carlos@ejemplo.com",
+  "password": "Password123",
+  "telefono": "987654321",
+  "rol": "TECNICO"
 }
 ```
 
-**Response (200):**
+**Response (201 Created):**
 ```json
 {
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "rol": "string (ADMIN | CLIENTE | TECNICO)"
+  "id": 1,
+  "nombre": "Carlos Gómez",
+  "email": "carlos@ejemplo.com",
+  "telefono": "987654321",
+  "fotoUrl": null,
+  "direccion": null,
+  "distrito": null,
+  "ciudad": null,
+  "rol": "TECNICO"
 }
 ```
 
 ---
 
-### 2. Iniciar sesión (Login)
+### 1.2. Iniciar sesión (Login)
 - **Método:** `POST`
 - **Ruta:** `/api/v1/auth/login`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
+- **Permisos:** Público (Sin autenticación)
 
 **Body (Request):**
 ```json
 {
-  "email": "string (obligatorio)",
-  "password": "string (obligatorio)"
+  "email": "carlos@ejemplo.com",
+  "password": "Password123"
 }
 ```
 
-**Response (200):**
+**Response (200 OK):**
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiJ9...",
   "tipo": "Bearer",
   "expiresIn": 3600000,
-  "email": "usuario@mail.com",
-  "rol": "ADMIN"
-}
-```
-
-**Error (401):**
-```json
-{
-  "status": 401,
-  "error": "Unauthorized",
-  "message": "Credenciales inválidas"
+  "email": "carlos@ejemplo.com",
+  "rol": "TECNICO"
 }
 ```
 
 ---
 
-## 👥 Usuarios (Protegido - Requiere ADMIN)
+## 🔍 2. Catálogo Público y Búsqueda (Visitantes)
 
-### 3. Obtener todos los usuarios
+### 2.1. Búsqueda pública de servicios
+Permite buscar servicios en tiempo real examinando de forma simultánea el **título**, la **descripción** y la **categoría**. Oculta datos sensibles de contacto para visitantes.
 - **Método:** `GET`
-- **Ruta:** `/api/v1/usuarios`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
+- **Ruta:** `/api/v1/public/servicios`
+- **Permisos:** Público
 
-**Parámetros:** Ninguno
+**Parámetros de consulta (Query Params - Opcionales):**
+- `q`: Término de búsqueda (ej. `"gas"`, `"fuga"`, `"mantenimiento"`).
+- `categoriaId`: ID de la categoría (Long).
+- `distrito`: Nombre del distrito o ciudad (ej. `"Surco"`).
+- `precioMin`: Precio mínimo (Decimal).
+- `precioMax`: Precio máximo (Decimal).
+- `page`: Número de página (0-indexed, default: `0`).
+- `size`: Elementos por página (default: `10`).
+- `sort`: Campo de ordenamiento (ej. `precioEstimado,asc` o `createdAt,desc`).
 
-**Response (200):**
-```json
-[
-  {
-    "id": "long",
-    "nombre": "string",
-    "email": "string",
-    "telefono": "string",
-    "rol": "string (ADMIN | CLIENTE | TECNICO)"
-  },
-  ...
-]
+**Ejemplo de Request:**
+```http
+GET /api/v1/public/servicios?q=fuga&distrito=Surco&page=0&size=10
 ```
 
----
-
-### 4. Obtener usuario por ID
-- **Método:** `GET`
-- **Ruta:** `/api/v1/usuarios/{id}`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros:**
-- `id` (Path): ID del usuario (long)
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "rol": "string"
-}
-```
-
----
-
-### 5. Crear usuario
-- **Método:** `POST`
-- **Ruta:** `/api/v1/usuarios`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Body (Request):**
-```json
-{
-  "nombre": "string (max 80, obligatorio)",
-  "email": "string (email válido, max 100, obligatorio)",
-  "password": "string (mayúscula + minúscula + número, obligatorio)",
-  "telefono": "string (max 9, opcional)",
-  "rol": "enum: ADMIN | CLIENTE | TECNICO (obligatorio)"
-}
-```
-
-**Response (201):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "rol": "string"
-}
-```
-
----
-
-### 6. Actualizar usuario
-- **Método:** `PUT`
-- **Ruta:** `/api/v1/usuarios/{id}`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros:**
-- `id` (Path): ID del usuario (long)
-
-**Body (Request):**
-```json
-{
-  "nombre": "string (max 80, obligatorio)",
-  "email": "string (email válido, max 100, obligatorio)",
-  "password": "string (mayúscula + minúscula + número, obligatorio)",
-  "telefono": "string (max 9, opcional)",
-  "rol": "enum: ADMIN | CLIENTE | TECNICO (obligatorio)"
-}
-```
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "rol": "string"
-}
-```
-
----
-
-### 7. Eliminar usuario
-- **Método:** `DELETE`
-- **Ruta:** `/api/v1/usuarios/{id}`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros:**
-- `id` (Path): ID del usuario (long)
-
-**Response:** 204 No Content
-
----
-
-### 8. Buscar usuarios por nombre
-- **Método:** `GET`
-- **Ruta:** `/api/v1/usuarios/buscar/nombre`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros:**
-- `nombre` (Query): Nombre a buscar (string, obligatorio)
-
-**Response (200):**
-```json
-[
-  {
-    "id": "long",
-    "nombre": "string",
-    "email": "string",
-    "telefono": "string",
-    "rol": "string"
-  },
-  ...
-]
-```
-
----
-
-### 9. Buscar usuario por email
-- **Método:** `GET`
-- **Ruta:** `/api/v1/usuarios/buscar/email`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros:**
-- `email` (Query): Email a buscar (string, obligatorio)
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "rol": "string"
-}
-```
-
----
-
-### 10. Consultar usuarios con paginación
-- **Método:** `GET`
-- **Ruta:** `/api/v1/usuarios/consulta`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros (Query):**
-- `nombre` (Query): Filtro opcional por nombre
-- `page` (Query): Número de página (default: 0)
-- `size` (Query): Cantidad por página (default: 5)
-- `sort` (Query): Campo para ordenar (default: "nombre")
-
-**Response (200):**
+**Response (200 OK):**
 ```json
 {
   "content": [
     {
-      "id": "long",
-      "nombre": "string",
-      "email": "string",
-      "telefono": "string",
-      "rol": "string"
+      "id": 10,
+      "titulo": "Detección y reparación de fuga de gas",
+      "descripcion": "Revisión integral de tuberías de cobre y válvulas de paso.",
+      "precioEstimado": 80.00,
+      "tiempoEstimado": "2 horas",
+      "categoriaId": 2,
+      "categoriaNombre": "Gasfitería",
+      "tecnicoId": 5,
+      "tecnicoNombre": "Carlos Gómez",
+      "tecnicoFotoUrl": "https://mi-servidor.com/fotos/carlos.jpg",
+      "tecnicoDistrito": "Santiago de Surco",
+      "tecnicoCiudad": "Lima",
+      "tecnicoCalificacionPromedio": 4.8
     }
   ],
-  "pageable": {
-    "pageNumber": 0,
-    "pageSize": 5,
-    "sort": ["nombre"]
-  },
-  "totalElements": "long",
-  "totalPages": "int",
-  "first": "boolean",
-  "last": "boolean",
-  "hasNext": "boolean",
-  "hasPrevious": "boolean"
+  "totalElements": 1,
+  "totalPages": 1,
+  "size": 10,
+  "number": 0
 }
 ```
 
 ---
 
-## 🔧 Técnicos (Protegido)
-
-### 11. Obtener todos los técnicos
+### 2.2. Directorio público de técnicos
 - **Método:** `GET`
-- **Ruta:** `/api/v1/tecnicos`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ (Rol requerido: verificar SecurityConfig)
+- **Ruta:** `/api/v1/public/tecnicos`
+- **Permisos:** Público
 
-**Parámetros:** Ninguno
+**Parámetros de consulta:** `categoriaId`, `nombre`, `page`, `size`, `sort`.
 
-**Response (200):**
+**Response (200 OK):**
 ```json
-[
-  {
-    "id": "long",
-    "nombre": "string",
-    "email": "string",
-    "telefono": "string",
-    "aniosExperiencia": "int",
-    "calificacionPromedio": "double (0-5)",
-    "especialidadId": "long",
-    "nombreEspecialidad": "string"
-  },
-  ...
-]
+{
+  "content": [
+    {
+      "id": 5,
+      "nombre": "Carlos Gómez",
+      "fotoUrl": "https://mi-servidor.com/fotos/carlos.jpg",
+      "distrito": "Santiago de Surco",
+      "ciudad": "Lima",
+      "presentacion": "Gasfitero técnico con más de 8 años de experiencia.",
+      "aniosExperiencia": 8,
+      "calificacionPromedio": 4.8,
+      "totalResenias": 14,
+      "especialidadId": 2,
+      "especialidadNombre": "Gasfitería"
+    }
+  ]
+}
 ```
 
 ---
 
-### 12. Obtener técnico por ID
+## 👤 3. Perfil del Usuario Autenticado
+
+Disponible para cualquier usuario logueado (`CLIENTE`, `TECNICO`, `ADMIN`).
+
+### 3.1. Obtener mi perfil
 - **Método:** `GET`
-- **Ruta:** `/api/v1/tecnicos/{id}`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ (Rol requerido: verificar SecurityConfig)
+- **Ruta:** `/api/v1/perfil/me`
+- **Permisos:** Requiere Token JWT (`authenticated`)
 
-**Parámetros:**
-- `id` (Path): ID del técnico (long)
-
-**Response (200):**
+**Response (200 OK):**
 ```json
 {
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "aniosExperiencia": "int",
-  "calificacionPromedio": "double",
-  "especialidadId": "long",
-  "nombreEspecialidad": "string"
+  "id": 5,
+  "nombre": "Carlos Gómez",
+  "email": "carlos@ejemplo.com",
+  "telefono": "987654321",
+  "fotoUrl": "https://mi-servidor.com/fotos/carlos.jpg",
+  "direccion": "Av. Benavides 1234",
+  "distrito": "Santiago de Surco",
+  "ciudad": "Lima",
+  "rol": "TECNICO",
+  "presentacion": "Gasfitero certificado",
+  "aniosExperiencia": 8,
+  "calificacionPromedio": 4.8,
+  "yapeNumero": "987654321",
+  "plinNumero": "987654321",
+  "titularPago": "Carlos Gómez R.",
+  "especialidadId": 2,
+  "especialidadNombre": "Gasfitería"
 }
 ```
 
 ---
 
-### 13. Crear técnico
-- **Método:** `POST`
-- **Ruta:** `/api/v1/tecnicos`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Body (Request):**
-```json
-{
-  "nombre": "string (max 100, obligatorio)",
-  "email": "string (email válido, max 100, obligatorio)",
-  "telefono": "string (max 20, obligatorio)",
-  "aniosExperiencia": "int (>= 0, obligatorio)",
-  "calificacionPromedio": "double (0-5, obligatorio)",
-  "especialidadId": "long (obligatorio)"
-}
-```
-
-**Response (201):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "aniosExperiencia": "int",
-  "calificacionPromedio": "double",
-  "especialidadId": "long",
-  "nombreEspecialidad": "string"
-}
-```
-
----
-
-### 14. Actualizar técnico
+### 3.2. Actualizar mis datos personales
 - **Método:** `PUT`
-- **Ruta:** `/api/v1/tecnicos/{id}`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
-
-**Parámetros:**
-- `id` (Path): ID del técnico (long)
+- **Ruta:** `/api/v1/perfil/me`
+- **Permisos:** Requiere Token JWT (`authenticated`)
 
 **Body (Request):**
 ```json
 {
-  "nombre": "string (max 100, obligatorio)",
-  "email": "string (email válido, max 100, obligatorio)",
-  "telefono": "string (max 20, obligatorio)",
-  "aniosExperiencia": "int (>= 0, obligatorio)",
-  "calificacionPromedio": "double (0-5, obligatorio)",
-  "especialidadId": "long (obligatorio)"
-}
-```
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "aniosExperiencia": "int",
-  "calificacionPromedio": "double",
-  "especialidadId": "long",
-  "nombreEspecialidad": "string"
+  "nombre": "Carlos Gómez Actualizado",
+  "telefono": "987654321",
+  "fotoUrl": "https://mi-servidor.com/fotos/carlos2.jpg",
+  "direccion": "Av. Benavides 5678",
+  "distrito": "Surco",
+  "ciudad": "Lima"
 }
 ```
 
 ---
 
-### 15. Eliminar técnico
-- **Método:** `DELETE`
-- **Ruta:** `/api/v1/tecnicos/{id}`
-- **Autenticación:** ✅ Requerida
-- **Autorización:** ✅ Rol ADMIN
+## 🛠️ 4. Módulo de Técnicos (`ROLE_TECNICO`)
 
-**Parámetros:**
-- `id` (Path): ID del técnico (long)
-
-**Response:** 204 No Content
-
----
-
-## 👤 Clientes (Sin protección específica - OG Controller)
-
-### 16. Obtener todos los clientes
-- **Método:** `GET`
-- **Ruta:** `/api/clientes`
-- **Autenticación:** ❌ No requerida (Verificar)
-- **Autorización:** ❌ No requerida (Verificar)
-
-**Response (200):**
-```json
-[
-  {
-    "id": "long",
-    "usuario": {
-      "id": "long",
-      "nombre": "string",
-      "email": "string",
-      "telefono": "string",
-      "rol": "string"
-    },
-    "direccionHogar": "string"
-  },
-  ...
-]
-```
-
----
-
-### 17. Obtener cliente por ID
-- **Método:** `GET`
-- **Ruta:** `/api/clientes/{id}`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
-
-**Parámetros:**
-- `id` (Path): ID del cliente (long)
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "usuario": {
-    "id": "long",
-    "nombre": "string",
-    "email": "string",
-    "telefono": "string",
-    "rol": "string"
-  },
-  "direccionHogar": "string"
-}
-```
-
----
-
-### 18. Crear cliente
-- **Método:** `POST`
-- **Ruta:** `/api/clientes`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
-
-**Body (Request):**
-```json
-{
-  "usuario": {
-    "id": "long (opcional si es nuevo)",
-    "nombre": "string",
-    "email": "string",
-    "telefono": "string",
-    "rol": "CLIENTE"
-  },
-  "direccionHogar": "string"
-}
-```
-
-**Response (201):**
-```json
-{
-  "id": "long",
-  "usuario": {...},
-  "direccionHogar": "string"
-}
-```
-
----
-
-### 19. Actualizar cliente
+### 4.1. Configurar perfil profesional y métodos de pago
 - **Método:** `PUT`
-- **Ruta:** `/api/clientes/{id}`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
-
-**Parámetros:**
-- `id` (Path): ID del cliente (long)
+- **Ruta:** `/api/v1/tecnico/perfil`
+- **Permisos:** Requiere rol `TECNICO`
 
 **Body (Request):**
 ```json
 {
-  "nombre": "string",
-  "email": "string",
-  "telefono": "string",
-  "direccionHogar": "string"
-}
-```
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "usuario": {...},
-  "direccionHogar": "string"
+  "presentacion": "Especialista en instalaciones sanitarias y de gas residencial.",
+  "aniosExperiencia": 8,
+  "especialidadId": 2,
+  "yapeNumero": "987654321",
+  "plinNumero": "987654321",
+  "titularPago": "Carlos Gómez R.",
+  "fotoUrl": "https://mi-servidor.com/fotos/carlos.jpg"
 }
 ```
 
 ---
 
-### 20. Eliminar cliente
-- **Método:** `DELETE`
-- **Ruta:** `/api/clientes/{id}`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
-
-**Parámetros:**
-- `id` (Path): ID del cliente (long)
-
-**Response:** 204 No Content
-
----
-
-## 🎓 Especialidades (Sin protección específica)
-
-### 21. Obtener todas las especialidades
+### 4.2. Listar mis servicios ofrecidos
 - **Método:** `GET`
-- **Ruta:** `/api/especialidades`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
-
-**Response (200):**
-```json
-[
-  {
-    "id": "long",
-    "nombre": "string",
-    "descripcion": "string"
-  },
-  ...
-]
-```
+- **Ruta:** `/api/v1/tecnico/servicios`
+- **Permisos:** Requiere rol `TECNICO`
 
 ---
 
-### 22. Obtener especialidad por ID
-- **Método:** `GET`
-- **Ruta:** `/api/especialidades/{id}`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
-
-**Parámetros:**
-- `id` (Path): ID de la especialidad (long)
-
-**Response (200):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "descripcion": "string"
-}
-```
-
----
-
-### 23. Crear especialidad
+### 4.3. Crear nuevo servicio ofrecido
 - **Método:** `POST`
-- **Ruta:** `/api/especialidades`
-- **Autenticación:** ❌ No requerida (Probablemente requiera ADMIN)
-- **Autorización:** ❌ No requerida
+- **Ruta:** `/api/v1/tecnico/servicios`
+- **Permisos:** Requiere rol `TECNICO`
 
 **Body (Request):**
 ```json
 {
-  "nombre": "string",
-  "descripcion": "string"
-}
-```
-
-**Response (201):**
-```json
-{
-  "id": "long",
-  "nombre": "string",
-  "descripcion": "string"
+  "titulo": "Instalación de terma a gas",
+  "descripcion": "Instalación completa, verificación de presión y prueba de encendido.",
+  "precioEstimado": 120.00,
+  "tiempoEstimado": "3 horas",
+  "categoriaId": 2,
+  "activo": true
 }
 ```
 
 ---
 
-### 24. Actualizar especialidad
+### 4.4. Modificar servicio ofrecido
 - **Método:** `PUT`
-- **Ruta:** `/api/especialidades/{id}`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
+- **Ruta:** `/api/v1/tecnico/servicios/{id}`
+- **Permisos:** Requiere rol `TECNICO` (solo puede modificar sus propios servicios)
 
-**Parámetros:**
-- `id` (Path): ID de la especialidad (long)
+---
+
+### 4.5. Eliminar servicio ofrecido
+- **Método:** `DELETE`
+- **Ruta:** `/api/v1/tecnico/servicios/{id}`
+- **Permisos:** Requiere rol `TECNICO` (solo puede eliminar sus propios servicios)
+
+---
+
+## 📖 5. Ficha Técnica Completa y Reseñas
+
+### 5.1. Consultar información completa de un técnico
+Permite a usuarios registrados ver datos de contacto (teléfono, email), métodos de pago (Yape/Plin), catálogo de servicios y reseñas de clientes.
+- **Método:** `GET`
+- **Ruta:** `/api/v1/tecnicos/{id}/completo`
+- **Permisos:** Requiere Token JWT (`authenticated`)
+
+**Response (200 OK):**
+```json
+{
+  "id": 5,
+  "nombre": "Carlos Gómez",
+  "email": "carlos@ejemplo.com",
+  "telefono": "987654321",
+  "fotoUrl": "https://mi-servidor.com/fotos/carlos.jpg",
+  "direccion": "Av. Benavides 1234",
+  "distrito": "Santiago de Surco",
+  "ciudad": "Lima",
+  "presentacion": "Gasfitero certificado con 8 años de experiencia.",
+  "aniosExperiencia": 8,
+  "calificacionPromedio": 4.8,
+  "yapeNumero": "987654321",
+  "plinNumero": "987654321",
+  "titularPago": "Carlos Gómez R.",
+  "especialidadId": 2,
+  "especialidadNombre": "Gasfitería",
+  "servicios": [
+    {
+      "id": 10,
+      "titulo": "Detección y reparación de fuga de gas",
+      "descripcion": "Revisión integral de tuberías de cobre.",
+      "precioEstimado": 80.00,
+      "tiempoEstimado": "2 horas",
+      "activo": true,
+      "categoriaId": 2,
+      "categoriaNombre": "Gasfitería",
+      "tecnicoId": 5,
+      "tecnicoNombre": "Carlos Gómez",
+      "createdAt": "2026-08-18T10:00:00"
+    }
+  ],
+  "resenias": [
+    {
+      "id": 1,
+      "calificacion": 5,
+      "comentario": "Excelente servicio, muy puntual y solucionó la fuga de inmediato.",
+      "clienteId": 8,
+      "clienteNombre": "Ana Torres",
+      "clienteFotoUrl": null,
+      "tecnicoId": 5,
+      "createdAt": "2026-08-18T11:30:00"
+    }
+  ]
+}
+```
+
+---
+
+### 5.2. Calificar y dejar reseña a un técnico
+- **Método:** `POST`
+- **Ruta:** `/api/v1/resenias`
+- **Permisos:** Requiere rol `CLIENTE`
 
 **Body (Request):**
 ```json
 {
-  "nombre": "string",
-  "descripcion": "string"
+  "tecnicoId": 5,
+  "calificacion": 5,
+  "comentario": "Excelente trabajo y muy profesional."
 }
 ```
 
-**Response (200):**
+---
+
+### 5.3. Listar reseñas de un técnico
+- **Método:** `GET`
+- **Ruta:** `/api/v1/resenias/tecnico/{tecnicoId}`
+- **Permisos:** Público
+
+---
+
+## 📁 6. Categorías / Especialidades
+
+- `GET /api/v1/categorias`: Listar todas las categorías (Público).
+- `GET /api/v1/categorias/{id}`: Obtener categoría por ID (Público).
+- `POST /api/v1/categorias`: Crear categoría (**Requiere ADMIN**).
+- `PUT /api/v1/categorias/{id}`: Modificar categoría (**Requiere ADMIN**).
+- `DELETE /api/v1/categorias/{id}`: Eliminar categoría (**Requiere ADMIN**).
+
+**Body (Request para POST / PUT):**
 ```json
 {
-  "id": "long",
-  "nombre": "string",
-  "descripcion": "string"
+  "nombre": "Electricidad",
+  "descripcion": "Instalaciones eléctricas, cableado y mantenimiento de tableros."
 }
 ```
 
 ---
 
-### 25. Eliminar especialidad
-- **Método:** `DELETE`
-- **Ruta:** `/api/especialidades/{id}`
-- **Autenticación:** ❌ No requerida
-- **Autorización:** ❌ No requerida
+## 👥 7. Gestión de Usuarios (**Requiere ADMIN**)
 
-**Parámetros:**
-- `id` (Path): ID de la especialidad (long)
-
-**Response:** 204 No Content
+- `GET /api/v1/usuarios`: Listar todos los usuarios.
+- `GET /api/v1/usuarios/{id}`: Obtener usuario por ID.
+- `POST /api/v1/usuarios`: Crear usuario.
+- `PUT /api/v1/usuarios/{id}`: Actualizar usuario.
+- `DELETE /api/v1/usuarios/{id}`: Eliminar usuario.
+- `GET /api/v1/usuarios/consulta?nombre=carlos&page=0&size=5`: Búsqueda paginada.
 
 ---
 
-## 📝 Enums y Constantes
+## 📊 Matriz de Permisos
 
-### Rol (enum)
-```
-ADMIN      - Administrador del sistema
-CLIENTE    - Cliente que solicita servicios
-TECNICO    - Técnico que brinda servicios
-```
-
-### Códigos de Error HTTP
-```
-200 OK              - Solicitud exitosa
-201 Created         - Recurso creado exitosamente
-204 No Content      - Eliminación exitosa
-400 Bad Request     - Datos inválidos
-401 Unauthorized    - Token inválido o no autenticado
-403 Forbidden       - Usuario autenticado pero sin permisos
-404 Not Found       - Recurso no encontrado
-500 Internal Server - Error del servidor
-```
-
----
-
-## 🔒 Seguridad - Notas importantes
-
-1. **Token JWT:** Válido por 1 hora (3600000 ms)
-2. **Contraseña:** Debe contener:
-   - Al menos una mayúscula (A-Z)
-   - Al menos una minúscula (a-z)
-   - Al menos un número (0-9)
-3. **Email:** Debe ser único en el sistema
-4. **Rol ADMIN:** Requerido para operaciones CRUD en usuarios
-5. **Header Authorization:** Formato: `Bearer <token>` (importante incluir "Bearer ")
-
----
-
-## 🧪 Ejemplo de flujo completo
-
-### 1. Registro
-```bash
-curl -X POST http://localhost:8080/api/v1/auth/registro \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "Juan Pérez",
-    "email": "juan@example.com",
-    "password": "Password123",
-    "telefono": "987654321",
-    "rol": "ADMIN"
-  }'
-```
-
-### 2. Login
-```bash
-curl -X POST http://localhost:8080/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "juan@example.com",
-    "password": "Password123"
-  }'
-```
-
-Respuesta:
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiJ9...",
-  "tipo": "Bearer",
-  "expiresIn": 3600000,
-  "email": "juan@example.com",
-  "rol": "ADMIN"
-}
-```
-
-### 3. Usar token para acceder a endpoint protegido
-```bash
-curl -X GET http://localhost:8080/api/v1/usuarios \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..."
-```
-
----
-
-## 📞 Estado actual de endpoints
-
-| Endpoint | Estado | Notas |
-|----------|--------|-------|
-| `/api/v1/auth/registro` | ✅ Funcional | Sin autenticación |
-| `/api/v1/auth/login` | ✅ Funcional | Retorna JWT con roles |
-| `/api/v1/usuarios` (GET) | ✅ Funcional | Requiere ADMIN |
-| `/api/v1/usuarios/{id}` | ✅ Funcional | Requiere ADMIN |
-| `/api/v1/usuarios` (POST) | ✅ Funcional | Requiere ADMIN |
-| `/api/v1/usuarios/{id}` (PUT) | ✅ Funcional | Requiere ADMIN |
-| `/api/v1/usuarios/{id}` (DELETE) | ✅ Funcional | Requiere ADMIN |
-| `/api/v1/usuarios/buscar/*` | ✅ Funcional | Requiere ADMIN |
-| `/api/v1/tecnicos` | ✅ Funcional | Verificar permisos |
-| `/api/clientes` | ✅ Funcional | Sin autenticación |
-| `/api/especialidades` | ✅ Funcional | Sin autenticación |
-
----
-
-**Última actualización:** 2026-08-08
-**Documentación generada por:** GitHub Copilot CLI
-
+| Endpoint | Rol Permitido |
+|---|---|
+| `/api/v1/auth/**` | Público |
+| `/api/v1/public/**` | Público |
+| `GET /api/v1/categorias/**` | Público |
+| `POST, PUT, DELETE /api/v1/categorias/**` | `ROLE_ADMIN` |
+| `/api/v1/usuarios/**` | `ROLE_ADMIN` |
+| `/api/v1/tecnico/**` | `ROLE_TECNICO` |
+| `POST /api/v1/resenias` | `ROLE_CLIENTE` |
+| `/api/v1/perfil/**` | `ROLE_CLIENTE`, `ROLE_TECNICO`, `ROLE_ADMIN` |
+| `GET /api/v1/tecnicos/{id}/completo` | `ROLE_CLIENTE`, `ROLE_TECNICO`, `ROLE_ADMIN` |
