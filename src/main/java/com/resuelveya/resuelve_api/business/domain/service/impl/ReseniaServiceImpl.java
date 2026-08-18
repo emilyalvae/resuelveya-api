@@ -8,10 +8,12 @@ import com.resuelveya.resuelve_api.business.data.entity.Cliente;
 import com.resuelveya.resuelve_api.business.data.entity.Resenia;
 import com.resuelveya.resuelve_api.business.data.entity.Servicio;
 import com.resuelveya.resuelve_api.business.data.entity.Tecnico;
+import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import com.resuelveya.resuelve_api.business.data.repository.ClienteRepository;
 import com.resuelveya.resuelve_api.business.data.repository.ReseniaRepository;
 import com.resuelveya.resuelve_api.business.data.repository.ServicioRepository;
 import com.resuelveya.resuelve_api.business.data.repository.TecnicoRepository;
+import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
 import com.resuelveya.resuelve_api.business.domain.mapper.ReseniaMapper;
 import com.resuelveya.resuelve_api.business.domain.service.ReseniaService;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class ReseniaServiceImpl implements ReseniaService {
     private final ClienteRepository clienteRepository;
     private final TecnicoRepository tecnicoRepository;
     private final ServicioRepository servicioRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ReseniaMapper reseniaMapper;
 
     public ReseniaServiceImpl(
@@ -36,19 +39,31 @@ public class ReseniaServiceImpl implements ReseniaService {
             ClienteRepository clienteRepository,
             TecnicoRepository tecnicoRepository,
             ServicioRepository servicioRepository,
+            UsuarioRepository usuarioRepository,
             ReseniaMapper reseniaMapper
     ) {
         this.reseniaRepository = reseniaRepository;
         this.clienteRepository = clienteRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.servicioRepository = servicioRepository;
+        this.usuarioRepository = usuarioRepository;
         this.reseniaMapper = reseniaMapper;
+    }
+
+    private Cliente obtenerOCrearCliente(String emailCliente) {
+        return clienteRepository.findByEmail(emailCliente)
+                .orElseGet(() -> {
+                    var usuario = usuarioRepository.findByEmailIgnoreCase(emailCliente)
+                            .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con email: " + emailCliente));
+                    clienteRepository.registrarFilaClienteSiNoExiste(usuario.getId());
+                    return clienteRepository.findById(usuario.getId())
+                            .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado con email: " + emailCliente));
+                });
     }
 
     @Override
     public ReseniaResponseDto crearResenia(String emailCliente, ReseniaRequestDto requestDto) {
-        Cliente cliente = clienteRepository.findByEmail(emailCliente)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado con email: " + emailCliente));
+        Cliente cliente = obtenerOCrearCliente(emailCliente);
 
         Tecnico tecnico = null;
         Servicio servicio = null;
@@ -79,8 +94,7 @@ public class ReseniaServiceImpl implements ReseniaService {
 
     @Override
     public ReseniaResponseDto actualizarResenia(String emailCliente, Long reseniaId, ReseniaRequestDto requestDto) {
-        Cliente cliente = clienteRepository.findByEmail(emailCliente)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado con email: " + emailCliente));
+        Cliente cliente = obtenerOCrearCliente(emailCliente);
 
         Resenia resenia = reseniaRepository.findById(reseniaId)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Reseña no encontrada con ID: " + reseniaId));

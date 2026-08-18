@@ -339,7 +339,7 @@ Permite a usuarios registrados ver datos de contacto (teléfono, email), método
 
 ---
 
-### 5.2. Calificar y dejar reseña a un técnico
+### 5.2. Calificar y dejar reseña a un servicio o técnico
 - **Método:** `POST`
 - **Ruta:** `/api/v1/resenias`
 - **Permisos:** Requiere rol `CLIENTE`
@@ -347,15 +347,38 @@ Permite a usuarios registrados ver datos de contacto (teléfono, email), método
 **Body (Request):**
 ```json
 {
+  "servicioId": 10,
   "tecnicoId": 5,
   "calificacion": 5,
-  "comentario": "Excelente trabajo y muy profesional."
+  "comentario": "Excelente servicio, muy profesional y solucionó la fuga de inmediato."
 }
 ```
 
 ---
 
-### 5.3. Listar reseñas de un técnico
+### 5.3. Actualizar una reseña existente (Edición por el Autor)
+- **Método:** `PUT`
+- **Ruta:** `/api/v1/resenias/{id}`
+- **Permisos:** Requiere rol `CLIENTE` (debe ser el cliente autor de la reseña)
+
+**Body (Request):**
+```json
+{
+  "calificacion": 5,
+  "comentario": "Actualización: Servicio impecable con excelente garantía."
+}
+```
+
+---
+
+### 5.4. Listar reseñas de un servicio específico
+- **Método:** `GET`
+- **Ruta:** `/api/v1/resenias/servicio/{servicioId}`
+- **Permisos:** Público
+
+---
+
+### 5.5. Listar reseñas de un técnico
 - **Método:** `GET`
 - **Ruta:** `/api/v1/resenias/tecnico/{tecnicoId}`
 - **Permisos:** Público
@@ -384,8 +407,8 @@ Permite a usuarios registrados ver datos de contacto (teléfono, email), método
 
 - `GET /api/v1/usuarios`: Listar todos los usuarios.
 - `GET /api/v1/usuarios/{id}`: Obtener usuario por ID.
-- `POST /api/v1/usuarios`: Crear usuario.
-- `PUT /api/v1/usuarios/{id}`: Actualizar usuario.
+- `POST /api/v1/usuarios`: Crear usuario (con contraseña obligatoria).
+- `PUT /api/v1/usuarios/{id}`: Actualizar usuario (con actualización opcional de contraseña).
 - `DELETE /api/v1/usuarios/{id}`: Eliminar usuario.
 - `GET /api/v1/usuarios/consulta?nombre=carlos&page=0&size=5`: Búsqueda paginada.
 
@@ -393,14 +416,17 @@ Permite a usuarios registrados ver datos de contacto (teléfono, email), método
 
 ## 📊 Matriz de Permisos
 
-| Endpoint | Rol Permitido |
-|---|---|
-| `/api/v1/auth/**` | Público |
-| `/api/v1/public/**` | Público |
-| `GET /api/v1/categorias/**` | Público |
-| `POST, PUT, DELETE /api/v1/categorias/**` | `ROLE_ADMIN` |
-| `/api/v1/usuarios/**` | `ROLE_ADMIN` |
-| `/api/v1/tecnico/**` | `ROLE_TECNICO` |
-| `POST /api/v1/resenias` | `ROLE_CLIENTE` |
-| `/api/v1/perfil/**` | `ROLE_CLIENTE`, `ROLE_TECNICO`, `ROLE_ADMIN` |
-| `GET /api/v1/tecnicos/{id}/completo` | `ROLE_CLIENTE`, `ROLE_TECNICO`, `ROLE_ADMIN` |
+| Endpoint | Método | Rol Permitido |
+|---|---|---|
+| `/api/v1/auth/**` | POST | Público |
+| `/api/v1/public/**` | GET | Público |
+| `/api/v1/categorias/**` | GET | Público |
+| `/api/v1/categorias/**` | POST, PUT, DELETE | `ROLE_ADMIN` |
+| `/api/v1/usuarios/**` | GET, POST, PUT, DELETE | `ROLE_ADMIN` |
+| `/api/v1/tecnico/**` | GET, POST, PUT, DELETE | `ROLE_TECNICO` |
+| `/api/v1/resenias/**` | GET | Público |
+| `/api/v1/resenias` | POST | `ROLE_CLIENTE` |
+| `/api/v1/resenias/{id}` | PUT | `ROLE_CLIENTE` (Autor) |
+| `/api/v1/perfil/**` | GET, PUT | `ROLE_CLIENTE`, `ROLE_TECNICO`, `ROLE_ADMIN` |
+| `/api/v1/tecnicos/{id}/completo` | GET | `ROLE_CLIENTE`, `ROLE_TECNICO`, `ROLE_ADMIN` |
+

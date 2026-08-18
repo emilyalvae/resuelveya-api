@@ -66,7 +66,9 @@ CREATE TABLE IF NOT EXISTS resenia (
     comentario VARCHAR(1000),
     cliente_id BIGINT NOT NULL,
     tecnico_id BIGINT NOT NULL,
+    servicio_id BIGINT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT fk_resenia_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(usuario_id) ON DELETE CASCADE,
-    CONSTRAINT fk_resenia_tecnico FOREIGN KEY (tecnico_id) REFERENCES tecnico(usuario_id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_resenia_tecnico FOREIGN KEY (tecnico_id) REFERENCES tecnico(usuario_id) ON DELETE CASCADE,
+    CONSTRAINT fk_resenia_servicio FOREIGN KEY (servicio_id) REFERENCES servicio(id) ON DELETE CASCADE
+);
