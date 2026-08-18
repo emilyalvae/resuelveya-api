@@ -1,4 +1,4 @@
-package com.resuelveya.resuelve_api.controller;
+package com.resuelveya.resuelve_api.business.api.controller;
 
 import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioRequestDTO;
 import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
