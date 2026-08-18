@@ -31,8 +31,25 @@ public class ReseniaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ReseniaResponseDto> actualizarResenia(
+            Authentication authentication,
+            @PathVariable Long id,
+            @Valid @RequestBody ReseniaRequestDto requestDto
+    ) {
+        String email = authentication.getName();
+        ReseniaResponseDto actualizada = reseniaService.actualizarResenia(email, id, requestDto);
+        return ResponseEntity.ok(actualizada);
+    }
+
+    @GetMapping("/servicio/{servicioId}")
+    public ResponseEntity<List<ReseniaResponseDto>> listarReseniasPorServicio(@PathVariable Long servicioId) {
+        return ResponseEntity.ok(reseniaService.listarReseniasPorServicio(servicioId));
+    }
+
     @GetMapping("/tecnico/{tecnicoId}")
     public ResponseEntity<List<ReseniaResponseDto>> listarReseniasPorTecnico(@PathVariable Long tecnicoId) {
         return ResponseEntity.ok(reseniaService.listarReseniasPorTecnico(tecnicoId));
     }
 }
+

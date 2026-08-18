@@ -143,7 +143,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/categorias/**", "/api/especialidades/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/resenias/tecnico/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/resenias/**").permitAll()
                         .requestMatchers("/error").permitAll()
 
                         // Rutas de Administración
@@ -155,12 +155,14 @@ public class SecurityConfig {
                         // Rutas exclusivas para Técnicos
                         .requestMatchers("/api/v1/tecnico/**").hasRole("TECNICO")
 
-                        // Rutas para Clientes
-                        .requestMatchers(HttpMethod.POST, "/api/v1/resenias").hasRole("CLIENTE")
+                        // Rutas para Clientes (Crear y editar reseñas)
+                        .requestMatchers(HttpMethod.POST, "/api/v1/resenias/**").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/resenias/**").hasRole("CLIENTE")
 
                         // Rutas para usuarios autenticados (Perfil, Detalle Técnico Completo)
                         .requestMatchers("/api/v1/perfil/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/tecnicos/*/completo").authenticated()
+
 
                         .anyRequest().authenticated()
                 ).authenticationProvider(

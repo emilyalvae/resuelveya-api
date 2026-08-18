@@ -10,6 +10,9 @@ public record ReseniaResponseDto(
         String clienteNombre,
         String clienteFotoUrl,
         Long tecnicoId,
+        Long servicioId,
+        String servicioTitulo,
         LocalDateTime createdAt
 ) {
 }
+

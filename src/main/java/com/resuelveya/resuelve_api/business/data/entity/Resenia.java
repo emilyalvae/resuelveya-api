@@ -34,6 +34,10 @@ public class Resenia {
     @JoinColumn(name = "tecnico_id", nullable = false)
     private Tecnico tecnico;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "servicio_id")
+    private Servicio servicio;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -44,4 +48,14 @@ public class Resenia {
         this.tecnico = tecnico;
         this.createdAt = LocalDateTime.now();
     }
+
+    public Resenia(Integer calificacion, String comentario, Cliente cliente, Tecnico tecnico, Servicio servicio) {
+        this.calificacion = calificacion;
+        this.comentario = comentario;
+        this.cliente = cliente;
+        this.tecnico = tecnico;
+        this.servicio = servicio;
+        this.createdAt = LocalDateTime.now();
+    }
 }
+

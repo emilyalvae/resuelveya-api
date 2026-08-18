@@ -6,8 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record ReseniaRequestDto(
-        @NotNull(message = "El ID del técnico es obligatorio")
         Long tecnicoId,
+
+        Long servicioId,
 
         @NotNull(message = "La calificación es obligatoria")
         @Min(value = 1, message = "La calificación mínima es 1")
@@ -18,3 +19,4 @@ public record ReseniaRequestDto(
         String comentario
 ) {
 }
+

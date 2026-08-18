@@ -53,6 +53,21 @@ public class GlobalExceptionHandler  {
         );
     }
 
+    // 4. Manejo de Operación No Permitida -> HTTP 403 / 400
+    @ExceptionHandler(OperacionNoPermitidaException.class)
+    public ResponseEntity<ApiErrorResponse> manejarOperacionNoPermitida(
+            OperacionNoPermitidaException exception,
+            HttpServletRequest request
+    ){
+        return construirRespuesta(
+                HttpStatus.FORBIDDEN,
+                exception.getMessage(),
+                request.getRequestURI(),
+                Map.of()
+        );
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> manejarExcepcionGeneral(
             Exception exception,

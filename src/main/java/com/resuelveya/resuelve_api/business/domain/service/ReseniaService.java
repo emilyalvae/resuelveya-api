@@ -9,5 +9,10 @@ public interface ReseniaService {
 
     ReseniaResponseDto crearResenia(String emailCliente, ReseniaRequestDto requestDto);
 
+    ReseniaResponseDto actualizarResenia(String emailCliente, Long reseniaId, ReseniaRequestDto requestDto);
+
+    List<ReseniaResponseDto> listarReseniasPorServicio(Long servicioId);
+
     List<ReseniaResponseDto> listarReseniasPorTecnico(Long tecnicoId);
 }
+
