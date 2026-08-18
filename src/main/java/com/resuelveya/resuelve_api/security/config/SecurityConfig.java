@@ -138,29 +138,31 @@ public class SecurityConfig {
                                 )
                 )
 
-                .authorizeHttpRequests(auth->auth
-                        .requestMatchers(
-                                "/api/v1/auth/**"
-                        )
-                        .permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas (Visitantes y Autenticación)
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/public/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categorias/**", "/api/especialidades/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/resenias/tecnico/**").permitAll()
+                        .requestMatchers("/error").permitAll()
 
-                        .requestMatchers(
-                                HttpMethod.GET,"/api/especialidades/**"
-                        ).permitAll()
+                        // Rutas de Administración
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categorias/**", "/api/especialidades/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/categorias/**", "/api/especialidades/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categorias/**", "/api/especialidades/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/usuarios/**").hasRole("ADMIN")
 
-                        .requestMatchers("/api/v1/usuarios/**")
-                        .hasRole("ADMIN")
+                        // Rutas exclusivas para Técnicos
+                        .requestMatchers("/api/v1/tecnico/**").hasRole("TECNICO")
 
-                        .requestMatchers(
-                                "/error"
-                        )
-                        .permitAll()
+                        // Rutas para Clientes
+                        .requestMatchers(HttpMethod.POST, "/api/v1/resenias").hasRole("CLIENTE")
 
-                        .anyRequest()
-                        .authenticated()
+                        // Rutas para usuarios autenticados (Perfil, Detalle Técnico Completo)
+                        .requestMatchers("/api/v1/perfil/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tecnicos/*/completo").authenticated()
 
-
-
+                        .anyRequest().authenticated()
                 ).authenticationProvider(
                 authenticationProvider()
         )

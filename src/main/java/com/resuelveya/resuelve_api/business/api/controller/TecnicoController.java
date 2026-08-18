@@ -2,6 +2,8 @@ package com.resuelveya.resuelve_api.business.api.controller;
 
 import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoRequestDto;
 import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoResponseDto;
+import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoCompletoResponseDto;
+import com.resuelveya.resuelve_api.business.domain.service.CatalogoPublicoService;
 import com.resuelveya.resuelve_api.business.domain.service.TecnicoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -18,12 +20,19 @@ import java.util.List;
 public class TecnicoController {
 
     private final TecnicoService tecnicoService;
-
+    private final CatalogoPublicoService catalogoPublicoService;
 
     public TecnicoController(
-            TecnicoService tecnicoService
+            TecnicoService tecnicoService,
+            CatalogoPublicoService catalogoPublicoService
     ) {
         this.tecnicoService = tecnicoService;
+        this.catalogoPublicoService = catalogoPublicoService;
+    }
+
+    @GetMapping("/{id}/completo")
+    public ResponseEntity<TecnicoCompletoResponseDto> obtenerTecnicoCompleto(@PathVariable Long id) {
+        return ResponseEntity.ok(catalogoPublicoService.obtenerTecnicoCompleto(id));
     }
 
 

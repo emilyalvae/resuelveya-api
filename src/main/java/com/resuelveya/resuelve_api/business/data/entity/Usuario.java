@@ -27,6 +27,13 @@ public class Usuario {
     private String email;
     private String telefono;
 
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    private String direccion;
+    private String distrito;
+    private String ciudad;
+
     @Column(nullable = false)
     private String password;
 
@@ -37,13 +44,13 @@ public class Usuario {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Usuario(String nombre, String email, String telefono,String password, Rol rol) {
+    public Usuario(String nombre, String email, String telefono, String password, Rol rol) {
         this.nombre = nombre;
         this.email = email;
         this.telefono = telefono;
-        this.password=password;
-        this.rol = rol; // asigna un valor por defecto
-        this.createdAt=LocalDateTime.now();
+        this.password = password;
+        this.rol = rol;
+        this.createdAt = LocalDateTime.now();
     }
 
 }

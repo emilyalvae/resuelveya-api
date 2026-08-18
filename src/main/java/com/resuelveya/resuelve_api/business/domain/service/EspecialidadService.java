@@ -1,7 +1,7 @@
 package com.resuelveya.resuelve_api.business.domain.service;
 
-import com.resuelveya.resuelve_api.business.data.entity.Especialidad;
-import com.resuelveya.resuelve_api.business.data.repository.EspecialidadRepository;
+import com.resuelveya.resuelve_api.business.data.entity.Categoria;
+import com.resuelveya.resuelve_api.business.data.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,26 +13,26 @@ import java.util.Optional;
 public class EspecialidadService {
 
     @Autowired
-    private EspecialidadRepository especialidadRepository;
+    private CategoriaRepository especialidadRepository;
 
     @Transactional
-    public Especialidad crearEspecialidad(Especialidad especialidad) {
+    public Categoria crearEspecialidad(Categoria especialidad) {
         // Configurar Flush para mejorar el rendimiento
         return especialidadRepository.saveAndFlush(especialidad);
     }
 
     @Transactional(readOnly = true)
-    public List<Especialidad> listarTodas() {
+    public List<Categoria> listarTodas() {
         return especialidadRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Optional<Especialidad> obtenerPorId(Long id) {
+    public Optional<Categoria> obtenerPorId(Long id) {
         return especialidadRepository.findById(id);
     }
 
     @Transactional
-    public Especialidad actualizarEspecialidad(Long id, Especialidad datosActualizados) {
+    public Categoria actualizarEspecialidad(Long id, Categoria datosActualizados) {
         return especialidadRepository.findById(id).map(existente -> {
             existente.setNombre(datosActualizados.getNombre());
             existente.setDescripcion(datosActualizados.getDescripcion());

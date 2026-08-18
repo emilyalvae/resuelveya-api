@@ -2,6 +2,8 @@ package com.resuelveya.resuelve_api.business.domain.service.impl;
 
 import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioRequestDTO;
 import com.resuelveya.resuelve_api.business.api.dto.usuario.UsuarioResponseDTO;
+import com.resuelveya.resuelve_api.business.data.entity.Cliente;
+import com.resuelveya.resuelve_api.business.data.entity.Tecnico;
 import com.resuelveya.resuelve_api.business.data.entity.Usuario;
 import com.resuelveya.resuelve_api.business.api.exception.RecursoDuplicadoException;
 import com.resuelveya.resuelve_api.business.api.exception.RecursoNoEncontradoException;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @Transactional
@@ -26,18 +29,20 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final TecnicoRepository tecnicoRepository;
     private final ClienteRepository clienteRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final UsuarioMapper usuarioMapper;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
-                           TecnicoRepository tecnicoRepository,
-                              ClienteRepository clienteRepository,
-                              UsuarioMapper usuarioMapper){
-     this.usuarioRepository=usuarioRepository;
-     this.tecnicoRepository=tecnicoRepository;
-     this.clienteRepository=clienteRepository;
-     this.usuarioMapper=usuarioMapper;
-
+    public UsuarioServiceImpl(
+            UsuarioRepository usuarioRepository,
+            TecnicoRepository tecnicoRepository,
+            ClienteRepository clienteRepository,
+            PasswordEncoder passwordEncoder,
+            UsuarioMapper usuarioMapper) {
+        this.usuarioRepository = usuarioRepository;
+        this.tecnicoRepository = tecnicoRepository;
+        this.clienteRepository = clienteRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioMapper = usuarioMapper;
     }
 
     @Override
@@ -51,28 +56,48 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioResponseDTO obtenerPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNoEncontradoException(
-                                "Usuario no encontrado con ID:"+id));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Usuario no encontrado con ID:" + id));
         return usuarioMapper.toResponseDto(usuario);
     }
 
     @Override
-    public UsuarioResponseDTO crear(UsuarioRequestDTO request){
+    public UsuarioResponseDTO crear(UsuarioRequestDTO request) {
         if (usuarioRepository.existsByEmailIgnoreCase(request.email())) {
             throw new RecursoDuplicadoException("El email ya está registrado");
         }
 
+        String encodedPassword = passwordEncoder.encode(request.password());
+
         Usuario usuario;
         switch (request.rol()) {
-            case CLIENTE -> usuario = clienteRepository.save(usuarioMapper.toCliente(request));
-            case TECNICO -> usuario = tecnicoRepository.save(usuarioMapper.toTecnico(request));
-            case ADMIN   -> usuario = usuarioRepository.save(usuarioMapper.toAdmin(request));
-            default      -> throw new RolInvalidoException("Rol inválido");
+            case CLIENTE -> {
+                Cliente cliente = usuarioMapper.toCliente(request);
+                cliente.setPassword(encodedPassword);
+                usuario = clienteRepository.save(cliente);
+            }
+            case TECNICO -> {
+                Tecnico tecnico = usuarioMapper.toTecnico(request);
+                tecnico.setPassword(encodedPassword);
+                if (tecnico.getAniosExperiencia() == null) {
+                    tecnico.setAniosExperiencia(0);
+                }
+                if (tecnico.getCalificacionPromedio() == null) {
+                    tecnico.setCalificacionPromedio(0.0);
+                }
+                usuario = tecnicoRepository.save(tecnico);
+            }
+            case ADMIN -> {
+                Usuario admin = usuarioMapper.toAdmin(request);
+                admin.setPassword(encodedPassword);
+                usuario = usuarioRepository.save(admin);
+            }
+            default -> throw new RolInvalidoException("Rol inválido");
         }
 
         return usuarioMapper.toResponseDto(usuario);
- }
+    }
+
     @Override
     public UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO request) {
         Usuario usuario = usuarioRepository.findById(id)
@@ -109,15 +134,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Page<UsuarioResponseDTO> consultar(String nombre, Pageable pageable) {
-        String nombreNormalizado =
-                nombre == null || nombre.isBlank()
-                        ? null
-                        : nombre.trim();
+        String nombreNormalizado = nombre == null || nombre.isBlank()
+                ? null
+                : nombre.trim();
 
         return usuarioRepository.buscarUsuarios(
-                        nombreNormalizado,
-                        pageable
-                )
+                nombreNormalizado,
+                pageable)
                 .map(usuarioMapper::toResponseDto);
     }
 
