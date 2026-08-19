@@ -105,7 +105,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
+        String existingPassword = usuario.getPassword();
         usuarioMapper.actualizarEntidad(request, usuario);
+
+        if (request.password() != null && !request.password().isBlank()) {
+            usuario.setPassword(passwordEncoder.encode(request.password().trim()));
+        } else {
+            usuario.setPassword(existingPassword);
+        }
 
         Usuario actualizado = usuarioRepository.saveAndFlush(usuario);
 
