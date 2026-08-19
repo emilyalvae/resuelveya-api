@@ -79,10 +79,10 @@ public class ServicioTecnicoServiceImpl implements ServicioTecnicoService {
                 guardado.getEmail(),
                 guardado.getTelefono(),
                 guardado.getFotoUrl(),
-                guardado.getDireccion(),
-                guardado.getDistrito(),
                 guardado.getCiudad(),
+                guardado.getCodigoUbigeo(),
                 guardado.getRol(),
+                null, null, null,
                 guardado.getPresentacion(),
                 guardado.getAniosExperiencia(),
                 guardado.getCalificacionPromedio(),
@@ -90,7 +90,9 @@ public class ServicioTecnicoServiceImpl implements ServicioTecnicoService {
                 guardado.getPlinNumero(),
                 guardado.getTitularPago(),
                 guardado.getEspecialidad() != null ? guardado.getEspecialidad().getId() : null,
-                guardado.getEspecialidad() != null ? guardado.getEspecialidad().getNombre() : null);
+                guardado.getEspecialidad() != null ? guardado.getEspecialidad().getNombre() : null,
+                guardado.getValidacion() != null ? guardado.getValidacion() : false
+        );
     }
 
     @Override

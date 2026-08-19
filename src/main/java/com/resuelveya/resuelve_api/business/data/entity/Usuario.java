@@ -21,27 +21,32 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
-    private String telefono;
-
-    @Column(name = "foto_url")
-    private String fotoUrl;
-
-    private String direccion;
-    private String distrito;
-    private String ciudad;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(length = 20)
+    private String telefono;
+
+    @Column(length = 100)
+    private String ciudad;
+
+    @Column(name = "codigo_ubigeo", length = 10)
+    private String codigoUbigeo;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private Rol rol;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Usuario(String nombre, String email, String telefono, String password, Rol rol) {
@@ -52,5 +57,4 @@ public class Usuario {
         this.rol = rol;
         this.createdAt = LocalDateTime.now();
     }
-
 }

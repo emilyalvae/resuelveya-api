@@ -34,7 +34,7 @@ public interface ServicioRepository extends JpaRepository<Servicio, Long> {
                   OR LOWER(c.nombre) LIKE LOWER(CONCAT('%', :query, '%'))
               )
               AND (:categoriaId IS NULL OR c.id = :categoriaId)
-              AND (:distrito IS NULL OR LOWER(t.distrito) LIKE LOWER(CONCAT('%', :distrito, '%')) OR LOWER(t.ciudad) LIKE LOWER(CONCAT('%', :distrito, '%')))
+              AND (:distrito IS NULL OR LOWER(t.ciudad) LIKE LOWER(CONCAT('%', :distrito, '%')) OR LOWER(t.codigoUbigeo) LIKE LOWER(CONCAT('%', :distrito, '%')))
               AND (:precioMin IS NULL OR s.precioEstimado >= :precioMin)
               AND (:precioMax IS NULL OR s.precioEstimado <= :precioMax)
             """)

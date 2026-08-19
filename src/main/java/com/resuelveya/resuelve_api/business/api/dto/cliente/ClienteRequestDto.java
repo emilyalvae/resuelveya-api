@@ -21,6 +21,9 @@ public class ClienteRequestDto {
     @Size(min = 9, max = 15, message = "El teléfono debe contener entre 9 y 15 dígitos")
     private String telefono;
 
-    @NotBlank(message = "La dirección de hogar es obligatoria")
-    private String direccionHogar;
+    private String direccion;
+
+    private Double latitud;
+
+    private Double longitud;
 }

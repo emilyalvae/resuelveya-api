@@ -13,8 +13,8 @@ public record ServicioPublicoDto(
         Long tecnicoId,
         String tecnicoNombre,
         String tecnicoFotoUrl,
-        String tecnicoDistrito,
         String tecnicoCiudad,
+        String tecnicoCodigoUbigeo,
         Double tecnicoCalificacionPromedio
 ) {
 }

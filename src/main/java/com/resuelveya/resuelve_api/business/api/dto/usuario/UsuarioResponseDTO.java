@@ -1,4 +1,3 @@
-
 package com.resuelveya.resuelve_api.business.api.dto.usuario;
 
 import com.resuelveya.resuelve_api.business.data.entity.enums.Rol;
@@ -9,9 +8,8 @@ public record UsuarioResponseDTO(
         String email,
         String telefono,
         String fotoUrl,
-        String direccion,
-        String distrito,
         String ciudad,
+        String codigoUbigeo,
         Rol rol
 ) {
 }

@@ -13,33 +13,35 @@ CREATE TABLE IF NOT EXISTS usuario (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    telefono VARCHAR(20),
-    foto_url VARCHAR(255),
-    direccion VARCHAR(255),
-    distrito VARCHAR(100),
-    ciudad VARCHAR(100),
     password VARCHAR(255) NOT NULL,
+    telefono VARCHAR(20),
+    ciudad VARCHAR(100),
+    codigo_ubigeo VARCHAR(10),
     rol VARCHAR(20) NOT NULL,
+    foto_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 -- 3. Tabla Separada Cliente (Herencia JOINED)
 CREATE TABLE IF NOT EXISTS cliente (
     usuario_id BIGINT PRIMARY KEY,
-    direccion_hogar VARCHAR(200),
+    direccion VARCHAR(255),
+    latitud DOUBLE,
+    longitud DOUBLE,
     CONSTRAINT fk_cliente_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
 -- 4. Tabla Separada Tecnico (Herencia JOINED)
 CREATE TABLE IF NOT EXISTS tecnico (
     usuario_id BIGINT PRIMARY KEY,
-    presentacion VARCHAR(1000),
+    especialidad_id BIGINT,
     anios_experiencia INT DEFAULT 0,
+    validacion BOOLEAN DEFAULT FALSE,
     calificacion_promedio DOUBLE DEFAULT 0.0,
     yape_numero VARCHAR(20),
     plin_numero VARCHAR(20),
+    presentacion VARCHAR(1000),
     titular_pago VARCHAR(120),
-    especialidad_id BIGINT,
     CONSTRAINT fk_tecnico_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
     CONSTRAINT fk_tecnico_especialidad FOREIGN KEY (especialidad_id) REFERENCES especialidad(id) ON DELETE SET NULL
 );
@@ -77,5 +79,5 @@ CREATE TABLE IF NOT EXISTS resenia (
 INSERT IGNORE INTO cliente (usuario_id)
 SELECT id FROM usuario WHERE rol = 'CLIENTE';
 
-INSERT IGNORE INTO tecnico (usuario_id, anios_experiencia, calificacion_promedio)
-SELECT id, 0, 0.0 FROM usuario WHERE rol = 'TECNICO';
+INSERT IGNORE INTO tecnico (usuario_id, anios_experiencia, calificacion_promedio, validacion)
+SELECT id, 0, 0.0, FALSE FROM usuario WHERE rol = 'TECNICO';

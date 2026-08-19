@@ -1,6 +1,7 @@
 package com.resuelveya.resuelve_api.business.api.controller;
 
 import com.resuelveya.resuelve_api.business.api.dto.usuario.ActualizarPerfilRequestDto;
+import com.resuelveya.resuelve_api.business.api.dto.usuario.CambiarPasswordRequestDto;
 import com.resuelveya.resuelve_api.business.api.dto.usuario.PerfilResponseDto;
 import com.resuelveya.resuelve_api.business.domain.service.PerfilService;
 import jakarta.validation.Valid;
@@ -31,5 +32,15 @@ public class PerfilController {
     ) {
         String email = authentication.getName();
         return ResponseEntity.ok(perfilService.actualizarMiPerfil(email, requestDto));
+    }
+
+    @PutMapping("/cambiar-password")
+    public ResponseEntity<Void> cambiarPassword(
+            Authentication authentication,
+            @Valid @RequestBody CambiarPasswordRequestDto requestDto
+    ) {
+        String email = authentication.getName();
+        perfilService.cambiarPassword(email, requestDto);
+        return ResponseEntity.noContent().build();
     }
 }

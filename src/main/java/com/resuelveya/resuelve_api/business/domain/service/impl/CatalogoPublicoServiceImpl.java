@@ -7,6 +7,7 @@ import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoCompletoRespo
 import com.resuelveya.resuelve_api.business.api.dto.tecnico.TecnicoPublicoDto;
 import com.resuelveya.resuelve_api.business.api.exception.RecursoNoEncontradoException;
 import com.resuelveya.resuelve_api.business.data.entity.Tecnico;
+import com.resuelveya.resuelve_api.business.data.repository.CategoriaRepository;
 import com.resuelveya.resuelve_api.business.data.repository.ReseniaRepository;
 import com.resuelveya.resuelve_api.business.data.repository.ServicioRepository;
 import com.resuelveya.resuelve_api.business.data.repository.TecnicoRepository;
@@ -28,6 +29,7 @@ public class CatalogoPublicoServiceImpl implements CatalogoPublicoService {
     private final ServicioRepository servicioRepository;
     private final TecnicoRepository tecnicoRepository;
     private final ReseniaRepository reseniaRepository;
+    private final CategoriaRepository categoriaRepository;
     private final ServicioMapper servicioMapper;
     private final ReseniaMapper reseniaMapper;
 
@@ -35,12 +37,14 @@ public class CatalogoPublicoServiceImpl implements CatalogoPublicoService {
             ServicioRepository servicioRepository,
             TecnicoRepository tecnicoRepository,
             ReseniaRepository reseniaRepository,
+            CategoriaRepository categoriaRepository,
             ServicioMapper servicioMapper,
             ReseniaMapper reseniaMapper
     ) {
         this.servicioRepository = servicioRepository;
         this.tecnicoRepository = tecnicoRepository;
         this.reseniaRepository = reseniaRepository;
+        this.categoriaRepository = categoriaRepository;
         this.servicioMapper = servicioMapper;
         this.reseniaMapper = reseniaMapper;
     }
@@ -82,10 +86,11 @@ public class CatalogoPublicoServiceImpl implements CatalogoPublicoService {
                             tecnico.getId(),
                             tecnico.getNombre(),
                             tecnico.getFotoUrl(),
-                            tecnico.getDistrito(),
                             tecnico.getCiudad(),
+                            tecnico.getCodigoUbigeo(),
                             tecnico.getPresentacion(),
                             tecnico.getAniosExperiencia(),
+                            tecnico.getValidacion() != null ? tecnico.getValidacion() : false,
                             tecnico.getCalificacionPromedio(),
                             totalResenias,
                             tecnico.getEspecialidad() != null ? tecnico.getEspecialidad().getId() : null,
@@ -115,11 +120,11 @@ public class CatalogoPublicoServiceImpl implements CatalogoPublicoService {
                 tecnico.getEmail(),
                 tecnico.getTelefono(),
                 tecnico.getFotoUrl(),
-                tecnico.getDireccion(),
-                tecnico.getDistrito(),
                 tecnico.getCiudad(),
+                tecnico.getCodigoUbigeo(),
                 tecnico.getPresentacion(),
                 tecnico.getAniosExperiencia(),
+                tecnico.getValidacion() != null ? tecnico.getValidacion() : false,
                 tecnico.getCalificacionPromedio(),
                 tecnico.getYapeNumero(),
                 tecnico.getPlinNumero(),

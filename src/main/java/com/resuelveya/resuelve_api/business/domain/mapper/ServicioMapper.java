@@ -22,8 +22,8 @@ public interface ServicioMapper {
     @Mapping(source = "tecnico.id", target = "tecnicoId")
     @Mapping(source = "tecnico.nombre", target = "tecnicoNombre")
     @Mapping(source = "tecnico.fotoUrl", target = "tecnicoFotoUrl")
-    @Mapping(source = "tecnico.distrito", target = "tecnicoDistrito")
     @Mapping(source = "tecnico.ciudad", target = "tecnicoCiudad")
+    @Mapping(source = "tecnico.codigoUbigeo", target = "tecnicoCodigoUbigeo")
     @Mapping(source = "tecnico.calificacionPromedio", target = "tecnicoCalificacionPromedio")
     ServicioPublicoDto toPublicoDto(Servicio servicio);
 

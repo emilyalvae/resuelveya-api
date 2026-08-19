@@ -8,10 +8,14 @@ public record PerfilResponseDto(
         String email,
         String telefono,
         String fotoUrl,
-        String direccion,
-        String distrito,
         String ciudad,
+        String codigoUbigeo,
         Rol rol,
+        // Campos Cliente
+        String direccion,
+        Double latitud,
+        Double longitud,
+        // Campos Técnico
         String presentacion,
         Integer aniosExperiencia,
         Double calificacionPromedio,
@@ -19,6 +23,7 @@ public record PerfilResponseDto(
         String plinNumero,
         String titularPago,
         Long especialidadId,
-        String especialidadNombre
+        String especialidadNombre,
+        Boolean validacion
 ) {
 }

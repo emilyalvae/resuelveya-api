@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
                 cliente.setPassword(encodedPassword);
                 cliente.setTelefono(telefono);
                 cliente.setRol(Rol.CLIENTE);
-                cliente.setDireccionHogar(null);
+                cliente.setDireccion(null);
                 usuarioGuardado = clienteRepository.saveAndFlush(cliente);
                 clienteRepository.registrarFilaClienteSiNoExiste(usuarioGuardado.getId());
             }
@@ -139,9 +139,8 @@ public class AuthServiceImpl implements AuthService {
                 usuario.getEmail(),
                 usuario.getTelefono(),
                 usuario.getFotoUrl(),
-                usuario.getDireccion(),
-                usuario.getDistrito(),
                 usuario.getCiudad(),
+                usuario.getCodigoUbigeo(),
                 usuario.getRol()
         );
     }

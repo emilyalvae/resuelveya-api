@@ -23,6 +23,9 @@ public class Tecnico extends Usuario {
     @Column(name = "anios_experiencia")
     private Integer aniosExperiencia = 0;
 
+    @Column(name = "validacion")
+    private Boolean validacion = false;
+
     @Column(name = "calificacion_promedio")
     private Double calificacionPromedio = 0.0;
 
