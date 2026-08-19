@@ -11,6 +11,7 @@ import com.resuelveya.resuelve_api.business.data.entity.Tecnico;
 import com.resuelveya.resuelve_api.business.data.repository.CategoriaRepository;
 import com.resuelveya.resuelve_api.business.data.repository.ServicioRepository;
 import com.resuelveya.resuelve_api.business.data.repository.TecnicoRepository;
+import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
 import com.resuelveya.resuelve_api.business.domain.mapper.ServicioMapper;
 import com.resuelveya.resuelve_api.business.domain.service.ServicioTecnicoService;
 import org.springframework.stereotype.Service;
@@ -25,16 +26,19 @@ public class ServicioTecnicoServiceImpl implements ServicioTecnicoService {
     private final TecnicoRepository tecnicoRepository;
     private final CategoriaRepository especialidadRepository;
     private final ServicioRepository servicioRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ServicioMapper servicioMapper;
 
     public ServicioTecnicoServiceImpl(
             TecnicoRepository tecnicoRepository,
             CategoriaRepository especialidadRepository,
             ServicioRepository servicioRepository,
+            UsuarioRepository usuarioRepository,
             ServicioMapper servicioMapper) {
         this.tecnicoRepository = tecnicoRepository;
         this.especialidadRepository = especialidadRepository;
         this.servicioRepository = servicioRepository;
+        this.usuarioRepository = usuarioRepository;
         this.servicioMapper = servicioMapper;
     }
 
@@ -156,7 +160,12 @@ public class ServicioTecnicoServiceImpl implements ServicioTecnicoService {
 
     private Tecnico buscarTecnicoPorEmail(String email) {
         return tecnicoRepository.findByEmail(email)
-                .orElseThrow(
-                        () -> new RecursoNoEncontradoException("Perfil de técnico no encontrado con email: " + email));
+                .orElseGet(() -> {
+                    var usuario = usuarioRepository.findByEmailIgnoreCase(email)
+                            .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con email: " + email));
+                    tecnicoRepository.registrarFilaTecnicoSiNoExiste(usuario.getId());
+                    return tecnicoRepository.findById(usuario.getId())
+                            .orElseThrow(() -> new RecursoNoEncontradoException("Perfil de técnico no encontrado con email: " + email));
+                });
     }
 }

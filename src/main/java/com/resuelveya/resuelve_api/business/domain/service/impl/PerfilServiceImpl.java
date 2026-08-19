@@ -5,6 +5,7 @@ import com.resuelveya.resuelve_api.business.api.dto.usuario.PerfilResponseDto;
 import com.resuelveya.resuelve_api.business.api.exception.RecursoNoEncontradoException;
 import com.resuelveya.resuelve_api.business.data.entity.Tecnico;
 import com.resuelveya.resuelve_api.business.data.entity.Usuario;
+import com.resuelveya.resuelve_api.business.data.repository.ClienteRepository;
 import com.resuelveya.resuelve_api.business.data.repository.TecnicoRepository;
 import com.resuelveya.resuelve_api.business.data.repository.UsuarioRepository;
 import com.resuelveya.resuelve_api.business.domain.service.PerfilService;
@@ -17,10 +18,16 @@ public class PerfilServiceImpl implements PerfilService {
 
     private final UsuarioRepository usuarioRepository;
     private final TecnicoRepository tecnicoRepository;
+    private final ClienteRepository clienteRepository;
 
-    public PerfilServiceImpl(UsuarioRepository usuarioRepository, TecnicoRepository tecnicoRepository) {
+    public PerfilServiceImpl(
+            UsuarioRepository usuarioRepository,
+            TecnicoRepository tecnicoRepository,
+            ClienteRepository clienteRepository
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.tecnicoRepository = tecnicoRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     @Override
@@ -51,7 +58,16 @@ public class PerfilServiceImpl implements PerfilService {
             usuario.setCiudad(requestDto.ciudad().trim());
         }
 
-        Usuario actualizado = usuarioRepository.save(usuario);
+        Usuario actualizado = usuarioRepository.saveAndFlush(usuario);
+
+        if (actualizado.getRol() != null) {
+            switch (actualizado.getRol()) {
+                case CLIENTE -> clienteRepository.registrarFilaClienteSiNoExiste(actualizado.getId());
+                case TECNICO -> tecnicoRepository.registrarFilaTecnicoSiNoExiste(actualizado.getId());
+                default -> {}
+            }
+        }
+
         return mapearAPerfilResponse(actualizado);
     }
 

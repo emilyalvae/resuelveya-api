@@ -74,7 +74,8 @@ public class UsuarioServiceImpl implements UsuarioService {
             case CLIENTE -> {
                 Cliente cliente = usuarioMapper.toCliente(request);
                 cliente.setPassword(encodedPassword);
-                usuario = clienteRepository.save(cliente);
+                usuario = clienteRepository.saveAndFlush(cliente);
+                clienteRepository.registrarFilaClienteSiNoExiste(usuario.getId());
             }
             case TECNICO -> {
                 Tecnico tecnico = usuarioMapper.toTecnico(request);
@@ -85,12 +86,13 @@ public class UsuarioServiceImpl implements UsuarioService {
                 if (tecnico.getCalificacionPromedio() == null) {
                     tecnico.setCalificacionPromedio(0.0);
                 }
-                usuario = tecnicoRepository.save(tecnico);
+                usuario = tecnicoRepository.saveAndFlush(tecnico);
+                tecnicoRepository.registrarFilaTecnicoSiNoExiste(usuario.getId());
             }
             case ADMIN -> {
                 Usuario admin = usuarioMapper.toAdmin(request);
                 admin.setPassword(encodedPassword);
-                usuario = usuarioRepository.save(admin);
+                usuario = usuarioRepository.saveAndFlush(admin);
             }
             default -> throw new RolInvalidoException("Rol inválido");
         }
@@ -105,7 +107,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         usuarioMapper.actualizarEntidad(request, usuario);
 
-        Usuario actualizado = usuarioRepository.save(usuario);
+        Usuario actualizado = usuarioRepository.saveAndFlush(usuario);
+
+        if (actualizado.getRol() != null) {
+            switch (actualizado.getRol()) {
+                case CLIENTE -> clienteRepository.registrarFilaClienteSiNoExiste(actualizado.getId());
+                case TECNICO -> tecnicoRepository.registrarFilaTecnicoSiNoExiste(actualizado.getId());
+                default -> {}
+            }
+        }
+
         return usuarioMapper.toResponseDto(actualizado);
     }
 

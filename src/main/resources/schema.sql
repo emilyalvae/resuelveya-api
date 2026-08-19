@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS resuelveya_db;
 USE resuelveya_db;
 
--- 1. Tabla Especialidad
+-- 1. Tabla Especialidad / Categoria
 CREATE TABLE IF NOT EXISTS especialidad (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS usuario (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
--- 3. Tabla Separada Cliente
+-- 3. Tabla Separada Cliente (Herencia JOINED)
 CREATE TABLE IF NOT EXISTS cliente (
     usuario_id BIGINT PRIMARY KEY,
     direccion_hogar VARCHAR(200),
     CONSTRAINT fk_cliente_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
--- 4. Tabla Separada Tecnico
+-- 4. Tabla Separada Tecnico (Herencia JOINED)
 CREATE TABLE IF NOT EXISTS tecnico (
     usuario_id BIGINT PRIMARY KEY,
     presentacion VARCHAR(1000),
@@ -71,4 +71,11 @@ CREATE TABLE IF NOT EXISTS resenia (
     CONSTRAINT fk_resenia_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(usuario_id) ON DELETE CASCADE,
     CONSTRAINT fk_resenia_tecnico FOREIGN KEY (tecnico_id) REFERENCES tecnico(usuario_id) ON DELETE CASCADE,
     CONSTRAINT fk_resenia_servicio FOREIGN KEY (servicio_id) REFERENCES servicio(id) ON DELETE CASCADE
-);
+);
+
+-- Sincronización retroactiva: asegurar filas hijas para usuarios existentes
+INSERT IGNORE INTO cliente (usuario_id)
+SELECT id FROM usuario WHERE rol = 'CLIENTE';
+
+INSERT IGNORE INTO tecnico (usuario_id, anios_experiencia, calificacion_promedio)
+SELECT id, 0, 0.0 FROM usuario WHERE rol = 'TECNICO';

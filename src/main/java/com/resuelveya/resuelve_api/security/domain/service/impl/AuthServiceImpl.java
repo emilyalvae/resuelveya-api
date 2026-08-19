@@ -74,7 +74,13 @@ public class AuthServiceImpl implements AuthService {
                 tecnico.setRol(Rol.TECNICO);
                 tecnico.setAniosExperiencia(0);
                 tecnico.setCalificacionPromedio(0.0);
-                usuarioGuardado = tecnicoRepository.save(tecnico);
+                tecnico.setPresentacion(null);
+                tecnico.setYapeNumero(null);
+                tecnico.setPlinNumero(null);
+                tecnico.setTitularPago(null);
+                tecnico.setEspecialidad(null);
+                usuarioGuardado = tecnicoRepository.saveAndFlush(tecnico);
+                tecnicoRepository.registrarFilaTecnicoSiNoExiste(usuarioGuardado.getId());
             }
             case CLIENTE -> {
                 Cliente cliente = new Cliente();
@@ -83,7 +89,9 @@ public class AuthServiceImpl implements AuthService {
                 cliente.setPassword(encodedPassword);
                 cliente.setTelefono(telefono);
                 cliente.setRol(Rol.CLIENTE);
-                usuarioGuardado = clienteRepository.save(cliente);
+                cliente.setDireccionHogar(null);
+                usuarioGuardado = clienteRepository.saveAndFlush(cliente);
+                clienteRepository.registrarFilaClienteSiNoExiste(usuarioGuardado.getId());
             }
             default -> {
                 Usuario admin = new Usuario();
@@ -92,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
                 admin.setPassword(encodedPassword);
                 admin.setTelefono(telefono);
                 admin.setRol(Rol.ADMIN);
-                usuarioGuardado = usuarioRepository.save(admin);
+                usuarioGuardado = usuarioRepository.saveAndFlush(admin);
             }
         }
 
