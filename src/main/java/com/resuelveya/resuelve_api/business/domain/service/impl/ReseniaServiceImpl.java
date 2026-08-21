@@ -72,9 +72,19 @@ public class ReseniaServiceImpl implements ReseniaService {
             servicio = servicioRepository.findById(requestDto.servicioId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Servicio no encontrado con ID: " + requestDto.servicioId()));
             tecnico = servicio.getTecnico();
+
+            // Evita registros duplicados garantizando que un cliente solo pueda opinar una vez por servicio
+            if (reseniaRepository.existsByClienteIdAndServicioId(cliente.getId(), servicio.getId())) {
+                throw new OperacionNoPermitidaException("Ya has registrado una reseña para este servicio. Solo se permite una reseña por cliente.");
+            }
         } else if (requestDto.tecnicoId() != null) {
             tecnico = tecnicoRepository.findById(requestDto.tecnicoId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Técnico no encontrado con ID: " + requestDto.tecnicoId()));
+
+            // Evita registros duplicados garantizando que un cliente solo pueda opinar una vez por técnico
+            if (reseniaRepository.existsByClienteIdAndTecnicoId(cliente.getId(), tecnico.getId())) {
+                throw new OperacionNoPermitidaException("Ya has registrado una reseña para este técnico. Solo se permite una reseña por cliente.");
+            }
         } else {
             throw new OperacionNoPermitidaException("Debe especificar al menos un servicio o un técnico para calificar.");
         }

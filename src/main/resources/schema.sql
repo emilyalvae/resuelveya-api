@@ -72,7 +72,8 @@ CREATE TABLE IF NOT EXISTS resenia (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT fk_resenia_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(usuario_id) ON DELETE CASCADE,
     CONSTRAINT fk_resenia_tecnico FOREIGN KEY (tecnico_id) REFERENCES tecnico(usuario_id) ON DELETE CASCADE,
-    CONSTRAINT fk_resenia_servicio FOREIGN KEY (servicio_id) REFERENCES servicio(id) ON DELETE CASCADE
+    CONSTRAINT fk_resenia_servicio FOREIGN KEY (servicio_id) REFERENCES servicio(id) ON DELETE CASCADE,
+    CONSTRAINT uk_resenia_cliente_servicio UNIQUE (cliente_id, servicio_id)
 );
 
 -- Sincronización retroactiva: asegurar filas hijas para usuarios existentes

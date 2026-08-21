@@ -68,7 +68,30 @@ public class CatalogoPublicoServiceImpl implements CatalogoPublicoService {
                 precioMin,
                 precioMax,
                 pageable
-        ).map(servicioMapper::toPublicoDto);
+        ).map(servicio -> {
+            Double promServicio = reseniaRepository.calcularCalificacionPromedioServicio(servicio.getId());
+            long totalResenias = reseniaRepository.countByServicioId(servicio.getId());
+            double calificacionFinal = promServicio != null ? Math.round(promServicio * 10.0) / 10.0 : 5.0;
+
+            var tecnico = servicio.getTecnico();
+            return new ServicioPublicoDto(
+                    servicio.getId(),
+                    servicio.getTitulo(),
+                    servicio.getDescripcion(),
+                    servicio.getPrecioEstimado(),
+                    servicio.getTiempoEstimado(),
+                    servicio.getCategoria().getId(),
+                    servicio.getCategoria().getNombre(),
+                    tecnico.getId(),
+                    tecnico.getNombre(),
+                    tecnico.getFotoUrl(),
+                    tecnico.getCiudad(),
+                    tecnico.getCodigoUbigeo(),
+                    calificacionFinal,
+                    totalResenias,
+                    tecnico.getCalificacionPromedio()
+            );
+        });
     }
 
     @Override

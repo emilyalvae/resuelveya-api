@@ -122,9 +122,17 @@ public class AuthServiceImpl implements AuthService {
                 .orElse("ROLE_CLIENTE");
 
         Rol rol = Rol.valueOf(authority.replace("ROLE_", ""));
+
+        // Recuperar datos complementarios del usuario para el frontend
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(username).orElse(null);
+        Long id = usuario != null ? usuario.getId() : null;
+        String nombre = usuario != null ? usuario.getNombre() : null;
+        String telefono = usuario != null ? usuario.getTelefono() : null;
+
         return new LoginResponseDto(
                 token, "Bearer", jwtService.obtenerTiempoExpiracion(),
-                userDetails.getUsername(), rol
+                userDetails.getUsername(), rol,
+                id, nombre, telefono
         );
     }
 
