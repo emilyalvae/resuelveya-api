@@ -1,0 +1,63 @@
+package com.resuelveya.resuelve_api.business.data.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "especialidad")
+public class Categoria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+    private String descripcion;
+
+    // Cumple: Rúbrica Relación @OneToMany
+    @OneToMany(mappedBy = "especialidad", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Tecnico> tecnicos = new ArrayList<>();
+
+    public Categoria() {
+    }
+
+    public Categoria(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public List<Tecnico> getTecnicos() {
+        return tecnicos;
+    }
+
+    public void setTecnicos(List<Tecnico> tecnicos) {
+        this.tecnicos = tecnicos;
+    }
+}
