@@ -7,6 +7,8 @@ import com.resuelveya.resuelve_api.business.data.entity.Categoria;
 import com.resuelveya.resuelve_api.business.data.repository.CategoriaRepository;
 import com.resuelveya.resuelve_api.business.domain.mapper.CategoriaMapper;
 import com.resuelveya.resuelve_api.business.domain.service.CategoriaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,14 @@ public class CategoriaServiceImpl implements CategoriaService {
                 .stream()
                 .map(categoriaMapper::toResponseDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CategoriaResponseDto> listarPaginado(String nombre, Pageable pageable) {
+        String nombreNormalizado = (nombre == null || nombre.isBlank()) ? null : nombre.trim();
+        return especialidadRepository.buscarCategorias(nombreNormalizado, pageable)
+                .map(categoriaMapper::toResponseDto);
     }
 
     @Override

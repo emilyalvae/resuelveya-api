@@ -17,17 +17,17 @@ public interface  UsuarioRepository extends JpaRepository<Usuario,Long> {
     Optional<Usuario> findByEmailIgnoreCase(String email);
     boolean existsByEmailIgnoreCase(String email);
 
-    //cONSULTA JPQL con parametros, paginacion y ordenamiento
+    // Consulta JPQL con soporte para filtro opcional de nombre, paginación y ordenamiento
     @Query(
             """
-SELECT u 
-FROM Usuario u 
-WHERE LOWER(u.nombre) 
-LIKE LOWER(CONCAT('%', :nombre, '%'))
-"""
-    )Page<Usuario> buscarUsuarios(
+            SELECT u 
+            FROM Usuario u 
+            WHERE (:nombre IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')))
+            """
+    )
+    Page<Usuario> buscarUsuarios(
             @Param("nombre") String nombre,
             Pageable pageable
-            );
+    );
 
 }
